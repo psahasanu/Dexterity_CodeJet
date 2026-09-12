@@ -923,7 +923,7 @@ PLACEMENT_DATA = {
                 "average_package": 9.0
             }
         }
-    }
+    },
     "IIT Hyderabad": {
         "CSE": {
             "2025": {
