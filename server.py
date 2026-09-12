@@ -247,7 +247,7 @@ def universities():
     })
 
 
-@app.route("/branches/<university>", methods=["GET"])
+@app.route("/branches/<path:university>", methods=["GET"])
 def branches(university):
     branch_list = get_branches(university)
 
@@ -322,6 +322,7 @@ if __name__ == "__main__":
     print("Health:       http://127.0.0.1:8000/health")
     print("Categories:   http://127.0.0.1:8000/job-categories")
     print("Universities: http://127.0.0.1:8000/universities")
+    print("Placement:    http://127.0.0.1:8000/placement")
     print("======================================")
     print()
 

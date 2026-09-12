@@ -24,10 +24,9 @@
 <!-- LOGIN -->
 
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+    <div class="glass-panel w-full max-w-md p-8 rounded-3xl border border-gray-800 shadow-2xl">
 
 ```
-<div class="glass-panel w-full max-w-md p-8 rounded-3xl border border-gray-800 shadow-2xl">
-
     <div class="text-center mb-8">
         <div class="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-bold shadow-lg shadow-indigo-500/30">
             N
@@ -285,7 +284,6 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-xs text-w
 <option value="pdf">Upload PDF</option>
 <option value="url">Job Offer URL</option>
 <option value="email">Email Offer</option>
-
 </select>
 
 </div>
@@ -484,8 +482,6 @@ Automated Safety Checks
 
 <section id="viewAnalyzer" class="hidden space-y-6">
 
-<!-- SKILL GAP AI -->
-
 <div class="glass-panel p-6 rounded-2xl border border-gray-800">
 
 <div class="flex items-center justify-between mb-5">
@@ -607,11 +603,11 @@ class="w-full mt-5 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl text-xs fon
 >
 
 <i class="fa-solid fa-bolt mr-2"></i>
-Compute Gap Analysis </button>
+Compute Gap Analysis
+
+</button>
 
 </div>
-
-<!-- SKILL GAP RESULTS -->
 
 <div id="skillGapResults" class="hidden space-y-4">
 
@@ -963,10 +959,9 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-whi
 
 >
 
+<!-- universities.py currently contains 2025 data -->
+
 <option value="2025">2025</option>
-<option value="2024">2024</option>
-<option value="2023">2023</option>
-<option value="2022">2022</option>
 
 </select>
 
@@ -981,7 +976,9 @@ class="w-full mt-5 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs fon
 >
 
 <i class="fa-solid fa-magnifying-glass mr-2"></i>
-Get Placement Data </button>
+Get Placement Data
+
+</button>
 
 <p
 id="placementStatus"
@@ -990,7 +987,7 @@ class="text-[10px] text-gray-500 mt-3"
 
 </div>
 
-<!-- PLACEMENT PLACEHOLDER -->
+<!-- PLACEHOLDER -->
 
 <div
 id="placementPlaceholder"
@@ -1005,7 +1002,7 @@ Select a university and branch to display placement intelligence.
 
 </div>
 
-<!-- PLACEMENT RESULTS -->
+<!-- RESULTS -->
 
 <div
 id="placementResult"
@@ -1199,6 +1196,7 @@ function login() {
             .classList.remove("hidden");
 
     }
+
 }
 
 
@@ -1230,20 +1228,16 @@ function switchProject(view) {
         .classList.add("hidden");
 
 
-    document.getElementById("navHubBtn")
-        .className =
+    document.getElementById("navHubBtn").className =
         "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
 
-    document.getElementById("navVerifierBtn")
-        .className =
+    document.getElementById("navVerifierBtn").className =
         "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
 
-    document.getElementById("navAnalyzerBtn")
-        .className =
+    document.getElementById("navAnalyzerBtn").className =
         "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
 
-    document.getElementById("navPlacementBtn")
-        .className =
+    document.getElementById("navPlacementBtn").className =
         "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
 
 
@@ -1252,8 +1246,7 @@ function switchProject(view) {
         document.getElementById("viewHub")
             .classList.remove("hidden");
 
-        document.getElementById("navHubBtn")
-            .className =
+        document.getElementById("navHubBtn").className =
             "px-4 py-2 rounded-lg text-xs font-bold text-indigo-400 bg-gray-800";
 
     }
@@ -1264,8 +1257,7 @@ function switchProject(view) {
         document.getElementById("viewVerifier")
             .classList.remove("hidden");
 
-        document.getElementById("navVerifierBtn")
-            .className =
+        document.getElementById("navVerifierBtn").className =
             "px-4 py-2 rounded-lg text-xs font-bold text-emerald-400 bg-gray-800";
 
     }
@@ -1276,8 +1268,7 @@ function switchProject(view) {
         document.getElementById("viewAnalyzer")
             .classList.remove("hidden");
 
-        document.getElementById("navAnalyzerBtn")
-            .className =
+        document.getElementById("navAnalyzerBtn").className =
             "px-4 py-2 rounded-lg text-xs font-bold text-purple-400 bg-gray-800";
 
         renderSkillBadges();
@@ -1291,8 +1282,7 @@ function switchProject(view) {
         document.getElementById("viewPlacement")
             .classList.remove("hidden");
 
-        document.getElementById("navPlacementBtn")
-            .className =
+        document.getElementById("navPlacementBtn").className =
             "px-4 py-2 rounded-lg text-xs font-bold text-indigo-400 bg-gray-800";
 
         loadUniversities();
@@ -2001,21 +1991,13 @@ function runSkillGapAnalysis() {
 
 
     if (matchRate >= 80) {
-
         status = "Highly Ready";
-
     } else if (matchRate >= 60) {
-
         status = "Job Ready";
-
     } else if (matchRate >= 40) {
-
         status = "Developing";
-
     } else {
-
         status = "Needs Improvement";
-
     }
 
 
@@ -2683,23 +2665,31 @@ async function loadUniversities() {
             const option =
                 document.createElement("option");
 
+
             option.value =
                 university;
 
+
             option.textContent =
                 university;
+
 
             select.appendChild(option);
 
         });
 
 
-        document.getElementById("branchSelect").innerHTML =
+        const branchSelect =
+            document.getElementById("branchSelect");
+
+
+        branchSelect.innerHTML =
             `<option value="">
                 Select university first
             </option>`;
 
-        document.getElementById("branchSelect").disabled =
+
+        branchSelect.disabled =
             true;
 
     }
@@ -2710,6 +2700,7 @@ async function loadUniversities() {
             `<option value="">
                 Backend unavailable
             </option>`;
+
 
         showModal(
             "Placement Backend Error",
@@ -2755,12 +2746,20 @@ async function loadBranches() {
 
     try {
 
+        /*
+         * encodeURIComponent is important because
+         * university names can contain spaces and
+         * special characters.
+         */
+
+        const endpoint =
+            API +
+            "/branches/" +
+            encodeURIComponent(university);
+
+
         const response =
-            await fetch(
-                API +
-                "/branches/" +
-                encodeURIComponent(university)
-            );
+            await fetch(endpoint);
 
 
         const data =
@@ -2789,15 +2788,28 @@ async function loadBranches() {
             const option =
                 document.createElement("option");
 
+
             option.value =
                 branch;
+
 
             option.textContent =
                 branch;
 
+
             branchSelect.appendChild(option);
 
         });
+
+
+        if ((data.branches || []).length === 0) {
+
+            branchSelect.innerHTML =
+                `<option value="">
+                    No branches available
+                </option>`;
+
+        }
 
 
         branchSelect.disabled = false;
@@ -2810,6 +2822,7 @@ async function loadBranches() {
             `<option value="">
                 Could not load branches
             </option>`;
+
 
         showModal(
             "Branch Loading Error",
@@ -2926,12 +2939,16 @@ async function loadPlacementData() {
 
         document.getElementById("highestPackage")
             .innerText =
-            result.highest_package ?? "Not disclosed";
+            result.highest_package != null
+            ? result.highest_package + " LPA"
+            : "Not disclosed";
 
 
         document.getElementById("averagePackage")
             .innerText =
-            result.average_package ?? "Not disclosed";
+            result.average_package != null
+            ? result.average_package + " LPA"
+            : "Not disclosed";
 
 
         document.getElementById("topCompany")
@@ -2946,9 +2963,13 @@ async function loadPlacementData() {
             } placement intelligence for ${
                 result.year || year
             }. Highest package: ${
-                result.highest_package ?? "Not disclosed"
+                result.highest_package != null
+                ? result.highest_package + " LPA"
+                : "Not disclosed"
             }, average package: ${
-                result.average_package ?? "Not disclosed"
+                result.average_package != null
+                ? result.average_package + " LPA"
+                : "Not disclosed"
             }, top company: ${
                 result.company || "Not disclosed"
             }.`;

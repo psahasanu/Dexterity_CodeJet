@@ -1,13 +1,11 @@
-from placement_data import PLACEMENT_DATA
+from universities import PLACEMENT_DATA
 
 
 def get_universities():
-    """Return all available universities."""
     return sorted(PLACEMENT_DATA.keys())
 
 
 def get_branches(university):
-    """Return all branches available for a university."""
     if university not in PLACEMENT_DATA:
         return []
 
@@ -15,11 +13,6 @@ def get_branches(university):
 
 
 def get_placement(university, branch, year="2025"):
-    """
-    Return placement information for the selected
-    university, branch and year.
-    """
-
     if university not in PLACEMENT_DATA:
         return {
             "success": False,
@@ -45,24 +38,7 @@ def get_placement(university, branch, year="2025"):
         "university": university,
         "branch": branch,
         "year": year,
-        "highest_package": data.get("highest_package"),
-        "company": data.get("company", "Not disclosed"),
-        "average_package": data.get("average_package")
+        "highest_package": data["highest_package"],
+        "company": data["company"],
+        "average_package": data["average_package"]
     }
-
-
-# Simple testing
-if __name__ == "__main__":
-
-    print("Available Universities:")
-    for university in get_universities():
-        print("-", university)
-
-    print("\nExample:")
-    result = get_placement(
-        "VIT Vellore",
-        "CSE",
-        "2025"
-    )
-
-    print(result)
