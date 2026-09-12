@@ -1,4 +1,3 @@
-
 import os
 import tempfile
 
@@ -12,17 +11,30 @@ from python_updated import (
     run_all_checks,
 )
 
+from eligibility import (
+    get_categories,
+    get_jobs,
+    check_eligibility,
+)
+
+
 app = Flask(__name__)
 
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+
 def error_response(message, status=400):
-    """base.html's JS reads data.detail on errors."""
     return jsonify({"detail": message}), status
+
 
 @app.route("/")
 def serve_ui():
-    path = os.path.abspath("base.html")
-    print("SERVING BASE.HTML FROM:", path)
     return send_from_directory(".", "base.html")
 
 
@@ -38,16 +50,24 @@ def read_txt():
     if not file:
         return error_response("No file uploaded.")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as tmp:
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".txt"
+    ) as tmp:
         file.save(tmp.name)
-        tmp_path = tmp.name
+        path = tmp.name
 
     try:
-        text = read_txtfile(tmp_path)
+        text = read_txtfile(path)
+
+        if text.startswith("ERROR:"):
+            return error_response(text)
+
         return jsonify({"text": text})
+
     finally:
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)
+        if os.path.exists(path):
+            os.remove(path)
 
 
 @app.route("/read-pdf", methods=["POST"])
@@ -57,12 +77,15 @@ def read_pdf():
     if not file:
         return error_response("No file uploaded.")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".pdf"
+    ) as tmp:
         file.save(tmp.name)
-        tmp_path = tmp.name
+        path = tmp.name
 
     try:
-        text = read_pdffile(tmp_path)
+        text = read_pdffile(path)
 
         if text.startswith("ERROR:"):
             return error_response(text)
@@ -70,8 +93,8 @@ def read_pdf():
         return jsonify({"text": text})
 
     finally:
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)
+        if os.path.exists(path):
+            os.remove(path)
 
 
 @app.route("/read-url", methods=["GET"])
@@ -96,7 +119,10 @@ def read_email():
     email_address = data.get("email_address", "")
     app_password = data.get("app_password", "")
 
-    text = fetch_offer_from_email(email_address, app_password)
+    text = fetch_offer_from_email(
+        email_address,
+        app_password
+    )
 
     if text.startswith("ERROR:"):
         return error_response(text)
@@ -109,21 +135,95 @@ def verify():
     data = request.get_json() or {}
     offer_text = data.get("text", "")
 
-    print("\n========== VERIFY INPUT ==========")
-    print(offer_text[:1000])
-    print("==================================\n")
-
     if not offer_text.strip():
-        return error_response("No offer text provided.")
+        return error_response(
+            "No offer text provided."
+        )
 
     result = run_all_checks(offer_text)
+
     return jsonify(result)
 
 
+@app.route("/job-categories", methods=["GET"])
+def job_categories():
+    return jsonify({
+        "categories": get_categories()
+    })
+
+
+@app.route("/jobs/<category>", methods=["GET"])
+def jobs_by_category(category):
+    jobs = get_jobs(category)
+
+    if not jobs:
+        return error_response(
+            "Category not found.",
+            404
+        )
+
+    return jsonify({
+        "category": category,
+        "jobs": jobs
+    })
+
+
+@app.route("/analyze-resume", methods=["POST"])
+def analyze_resume():
+    category = request.form.get("category", "")
+    job_title = request.form.get("job", "")
+    file = request.files.get("resume")
+
+    if not category:
+        return error_response(
+            "No category selected."
+        )
+
+    if not job_title:
+        return error_response(
+            "No job selected."
+        )
+
+    if not file:
+        return error_response(
+            "No resume uploaded."
+        )
+
+    with tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".docx"
+    ) as tmp:
+        file.save(tmp.name)
+        resume_path = tmp.name
+
+    try:
+        result = check_eligibility(
+            category,
+            job_title,
+            resume_path
+        )
+
+        return jsonify(result)
+
+    except Exception as exc:
+        print("RESUME ERROR:", exc)
+        return error_response(str(exc))
+
+    finally:
+        if os.path.exists(resume_path):
+            os.remove(resume_path)
+
+
 if __name__ == "__main__":
-    print("Starting Dexterity verification backend...")
-    print("Backend: http://127.0.0.1:8000")
-    print("Health:  http://127.0.0.1:8000/health")
+    print()
+    print("======================================")
+    print("       DEXTERITY BACKEND")
+    print("======================================")
+    print("Backend:    http://127.0.0.1:8000")
+    print("Health:     http://127.0.0.1:8000/health")
+    print("Categories: http://127.0.0.1:8000/job-categories")
+    print("======================================")
+    print()
 
     app.run(
         host="127.0.0.1",
@@ -131,5 +231,3 @@ if __name__ == "__main__":
         debug=False,
         use_reloader=False
     )
-
-
