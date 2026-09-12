@@ -860,3 +860,48 @@ def check_5_scam_database(offer_text, company_result=None):
         "matched_signatures": [],
         "reason": "No background-check issues reported."
     }
+def check_1_company_exists(offer_text):
+    """
+    Check whether the company mentioned in the offer appears to be legitimate.
+    Uses the existing company verification logic from cheak_external_api.py.
+    """
+
+    try:
+        from cheak_external_api import extract_company_name, verify_company
+
+        company_name = extract_company_name(offer_text)
+
+        if not company_name:
+            return {
+                "passed": False,
+                "points": 0,
+                "reason": "Could not identify a company name from the offer."
+            }
+
+        result = verify_company(company_name)
+
+        if isinstance(result, dict):
+            passed = result.get("passed", result.get("exists", False))
+            reason = result.get(
+                "reason",
+                result.get("message", "Company verification completed.")
+            )
+
+            return {
+                "passed": bool(passed),
+                "points": 20 if passed else 0,
+                "reason": reason
+            }
+
+        return {
+            "passed": bool(result),
+            "points": 20 if result else 0,
+            "reason": f"Company verification result for {company_name}."
+        }
+
+    except Exception as exc:
+        return {
+            "passed": None,
+            "points": 0,
+            "reason": f"Company verification error: {exc}"
+        }
