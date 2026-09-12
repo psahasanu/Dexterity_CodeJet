@@ -9,6 +9,14 @@ try:
 except ImportError:
     PdfReader = None
 
+from cheak_external_api import check_1_company_exists
+
+from check_2_to_5 import (
+    check_2_recruiter_real,
+    check_3_salary_viability,
+    check_4_email_verification,
+    check_5_scam_database,
+)
 
 POINTS_PER_CHECK = 20
 
@@ -157,15 +165,6 @@ def fetch_offer_from_email(email_address, app_password):
 
 
 def run_all_checks(offer_text: str) -> dict:
-
-    from check_2_to_5 import (
-        check_1_company_exists,
-        check_2_recruiter_real,
-        check_3_salary_viability,
-        check_4_email_verification,
-        check_5_scam_database,
-    )
-
     if not offer_text or not offer_text.strip():
         return {
             "score": 0,
@@ -209,6 +208,9 @@ def run_all_checks(offer_text: str) -> dict:
         min(POINTS_PER_CHECK, points)
     )
 
+    check_1.setdefault("passed", None)
+    check_1.setdefault("reason", "No reason was provided.")
+
     results["check_1"] = check_1
     total_score += check_1["points"]
 
@@ -244,10 +246,7 @@ def run_all_checks(offer_text: str) -> dict:
             )
 
             result.setdefault("passed", None)
-            result.setdefault(
-                "reason",
-                "No reason was provided."
-            )
+            result.setdefault("reason", "No reason was provided.")
 
             results[name] = result
             total_score += result["points"]
