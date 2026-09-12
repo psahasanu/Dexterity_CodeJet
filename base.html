@@ -1,5 +1,5 @@
+```html
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -11,10 +11,606 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-.glass-panel {
-    background: rgba(17,24,39,.7);
-    backdrop-filter: blur(12px);
+
+/* ==========================================================
+   DEXTERITY CYBERPUNK THEME
+   ========================================================== */
+
+:root {
+    --void: #010712;
+    --deep: #020b18;
+    --panel: rgba(3, 15, 32, 0.82);
+    --panel-light: rgba(5, 23, 48, 0.78);
+    --border: rgba(0, 153, 255, 0.20);
+    --border-bright: rgba(0, 183, 255, 0.55);
+    --cyan: #00d9ff;
+    --blue: #1677ff;
+    --violet: #7c3cff;
+    --green: #00f5a0;
+    --red: #ff3864;
+    --text: #d9efff;
+    --muted: #66809b;
 }
+
+/* BODY */
+
+html {
+    background: var(--void);
+    scroll-behavior: smooth;
+}
+
+body {
+    background:
+        radial-gradient(circle at 50% -20%, rgba(0, 102, 255, 0.16), transparent 38%),
+        radial-gradient(circle at 0% 100%, rgba(0, 217, 255, 0.06), transparent 30%),
+        linear-gradient(135deg, #01050d 0%, #020b18 48%, #010712 100%);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+/* CYBER GRID */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .22;
+    background-image:
+        linear-gradient(rgba(0, 145, 255, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 145, 255, .055) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+/* SCANLINES */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .025;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        #00bfff 4px
+    );
+}
+
+/* GLASS PANELS */
+
+.glass-panel {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(4, 23, 48, .90),
+            rgba(1, 10, 25, .84)
+        );
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-color: var(--border) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 119, 255, .025),
+        0 15px 45px rgba(0, 0, 0, .45),
+        inset 0 1px 0 rgba(0, 183, 255, .05);
+    position: relative;
+    overflow: hidden;
+}
+
+.glass-panel::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 217, 255, .55),
+        transparent
+    );
+    opacity: .5;
+    pointer-events: none;
+}
+
+.glass-panel:hover {
+    border-color: rgba(0, 174, 255, .35) !important;
+    box-shadow:
+        0 0 25px rgba(0, 119, 255, .08),
+        0 18px 50px rgba(0, 0, 0, .5),
+        inset 0 1px 0 rgba(0, 217, 255, .08);
+}
+
+/* HEADER */
+
+header {
+    background: rgba(1, 8, 20, .90) !important;
+    border-color: rgba(0, 153, 255, .20) !important;
+    box-shadow:
+        0 8px 35px rgba(0, 0, 0, .45),
+        0 1px 0 rgba(0, 170, 255, .08);
+}
+
+/* LOGO BLOCKS */
+
+header .bg-indigo-600,
+#loginScreen .bg-indigo-600 {
+    background:
+        linear-gradient(135deg, #0757c9, #00a9ff) !important;
+    box-shadow:
+        0 0 18px rgba(0, 174, 255, .35),
+        inset 0 0 12px rgba(255,255,255,.08);
+}
+
+/* TEXT */
+
+.text-white {
+    color: #e9f7ff !important;
+}
+
+.text-gray-100,
+.text-gray-200,
+.text-gray-300 {
+    color: #c8e1f3 !important;
+}
+
+.text-gray-400 {
+    color: #7795ae !important;
+}
+
+.text-gray-500 {
+    color: #55728c !important;
+}
+
+.text-gray-600 {
+    color: #3e5b73 !important;
+}
+
+.text-gray-700 {
+    color: #29465e !important;
+}
+
+.text-indigo-400,
+.text-indigo-300 {
+    color: var(--cyan) !important;
+}
+
+.text-purple-400,
+.text-purple-300 {
+    color: #9a72ff !important;
+}
+
+.text-emerald-400,
+.text-emerald-300 {
+    color: var(--green) !important;
+}
+
+/* NAVIGATION */
+
+nav {
+    background: rgba(1, 11, 25, .92) !important;
+    border-color: rgba(0, 153, 255, .18) !important;
+    box-shadow: inset 0 0 20px rgba(0, 80, 180, .04);
+}
+
+nav button {
+    transition:
+        color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+}
+
+nav button:hover {
+    color: #9feaff !important;
+    background: rgba(0, 120, 255, .08) !important;
+}
+
+nav button.bg-gray-800 {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 112, 255, .20),
+            rgba(0, 217, 255, .07)
+        ) !important;
+    box-shadow:
+        inset 0 0 15px rgba(0, 174, 255, .07),
+        0 0 14px rgba(0, 119, 255, .08);
+}
+
+/* STATUS */
+
+.bg-gray-900 {
+    background: rgba(2, 13, 29, .92) !important;
+}
+
+.bg-gray-900\/80 {
+    background: rgba(1, 10, 23, .90) !important;
+}
+
+.bg-gray-900\/50 {
+    background: rgba(1, 8, 20, .80) !important;
+}
+
+.border-gray-800 {
+    border-color: rgba(0, 139, 255, .17) !important;
+}
+
+/* INPUTS */
+
+input,
+textarea,
+select {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(1, 10, 23, .96),
+            rgba(2, 17, 35, .92)
+        ) !important;
+    border-color: rgba(0, 139, 255, .22) !important;
+    color: #d9f3ff !important;
+    box-shadow:
+        inset 0 0 18px rgba(0, 89, 180, .035);
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+    border-color: rgba(0, 174, 255, .38) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--cyan) !important;
+    box-shadow:
+        0 0 0 2px rgba(0, 217, 255, .07),
+        0 0 18px rgba(0, 174, 255, .12),
+        inset 0 0 15px rgba(0, 119, 255, .04) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #3f607a !important;
+}
+
+/* SELECT OPTIONS */
+
+select option {
+    background: #020d1d;
+    color: #d9f3ff;
+}
+
+/* FILE INPUT */
+
+input[type="file"] {
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background: #061b35;
+    color: #71dfff;
+    border: 1px solid rgba(0, 183, 255, .25);
+    border-radius: 7px;
+    padding: 5px 10px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* BUTTONS */
+
+button {
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+.bg-indigo-600 {
+    background:
+        linear-gradient(135deg, #0757c9, #087fe5) !important;
+    box-shadow:
+        0 0 18px rgba(0, 119, 255, .18);
+}
+
+.bg-indigo-600:hover,
+.hover\:bg-indigo-500:hover {
+    background:
+        linear-gradient(135deg, #0874e8, #00a9ff) !important;
+    box-shadow:
+        0 0 25px rgba(0, 174, 255, .30);
+}
+
+.bg-purple-600 {
+    background:
+        linear-gradient(135deg, #5621c9, #713cff) !important;
+    box-shadow:
+        0 0 18px rgba(124, 60, 255, .18);
+}
+
+.bg-purple-600:hover,
+.hover\:bg-purple-500:hover {
+    background:
+        linear-gradient(135deg, #6d2fff, #925eff) !important;
+    box-shadow:
+        0 0 25px rgba(124, 60, 255, .30);
+}
+
+.bg-emerald-600 {
+    background:
+        linear-gradient(135deg, #007d61, #00b985) !important;
+    box-shadow:
+        0 0 18px rgba(0, 245, 160, .15);
+}
+
+.bg-emerald-600:hover,
+.hover\:bg-emerald-500:hover {
+    background:
+        linear-gradient(135deg, #009c78, #00d59c) !important;
+    box-shadow:
+        0 0 25px rgba(0, 245, 160, .25);
+}
+
+.bg-gray-800 {
+    background: rgba(5, 25, 48, .85) !important;
+}
+
+.bg-gray-800:hover,
+.hover\:bg-gray-700:hover {
+    background: rgba(8, 39, 69, .95) !important;
+}
+
+/* LOGIN */
+
+#loginScreen {
+    position: relative;
+}
+
+#loginScreen .glass-panel {
+    box-shadow:
+        0 0 0 1px rgba(0, 145, 255, .08),
+        0 25px 80px rgba(0, 0, 0, .65),
+        0 0 55px rgba(0, 91, 255, .08);
+}
+
+#loginScreen h1 {
+    letter-spacing: .03em;
+}
+
+#loginScreen h1 span {
+    text-shadow: 0 0 14px rgba(0, 217, 255, .35);
+}
+
+/* HUB CARDS */
+
+#viewHub > div:first-child h1 {
+    text-shadow:
+        0 0 20px rgba(0, 153, 255, .16);
+}
+
+#viewHub .glass-panel {
+    cursor: pointer;
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+#viewHub .glass-panel:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 200, 255, .42) !important;
+    box-shadow:
+        0 15px 45px rgba(0, 0, 0, .5),
+        0 0 30px rgba(0, 119, 255, .10);
+}
+
+/* ICON BOXES */
+
+.bg-indigo-500\/10 {
+    background: rgba(0, 132, 255, .09) !important;
+}
+
+.bg-purple-500\/10 {
+    background: rgba(124, 60, 255, .09) !important;
+}
+
+.bg-emerald-500\/10 {
+    background: rgba(0, 245, 160, .07) !important;
+}
+
+.bg-rose-500\/10 {
+    background: rgba(255, 56, 100, .07) !important;
+}
+
+/* BADGES */
+
+.bg-indigo-500\/20 {
+    background: rgba(0, 153, 255, .13) !important;
+}
+
+.bg-purple-500\/20 {
+    background: rgba(124, 60, 255, .13) !important;
+}
+
+.bg-emerald-500\/20 {
+    background: rgba(0, 245, 160, .11) !important;
+}
+
+.bg-rose-500\/20 {
+    background: rgba(255, 56, 100, .11) !important;
+}
+
+/* RESULT CARDS */
+
+#resultsSection .glass-panel,
+#skillGapResults .glass-panel,
+#resumeResult .glass-panel,
+#placementResult .glass-panel {
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, .40),
+        inset 0 1px 0 rgba(0, 180, 255, .035);
+}
+
+/* CYBER TITLES */
+
+h1, h2, h3, h4 {
+    letter-spacing: .01em;
+}
+
+h3 {
+    text-shadow: 0 0 12px rgba(0, 130, 255, .06);
+}
+
+/* PLACEHOLDERS */
+
+#verifierPlaceholder,
+#placementPlaceholder {
+    border-style: dashed !important;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0, 100, 255, .045),
+            rgba(1, 10, 23, .75)
+        );
+}
+
+#verifierPlaceholder i,
+#placementPlaceholder i {
+    text-shadow: 0 0 20px rgba(0, 130, 255, .20);
+}
+
+/* SKILL TAGS */
+
+#skillTagsBadgeList {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(1, 10, 23, .95),
+            rgba(2, 16, 33, .92)
+        ) !important;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #010711;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        #064a91,
+        #008dcc
+    );
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00bfff;
+}
+
+/* SELECTION */
+
+::selection {
+    background: rgba(0, 183, 255, .25);
+    color: #ffffff;
+}
+
+/* MODAL */
+
+#modalOverlay {
+    background: rgba(0, 3, 10, .86) !important;
+    backdrop-filter: blur(8px);
+}
+
+#modalOverlay .glass-panel {
+    border-color: rgba(0, 183, 255, .35) !important;
+    box-shadow:
+        0 0 50px rgba(0, 119, 255, .16),
+        0 30px 80px rgba(0, 0, 0, .70);
+}
+
+/* PULSE STATUS */
+
+.animate-pulse {
+    box-shadow:
+        0 0 8px rgba(0, 245, 160, .55);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+    header {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    header nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    header nav button {
+        white-space: nowrap;
+    }
+
+}
+
+@media (max-width: 640px) {
+
+    main {
+        padding: 14px !important;
+    }
+
+    #loginScreen {
+        padding: 14px !important;
+    }
+
+}
+
+/* CYBER CORNER ACCENT */
+
+.glass-panel::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 35px;
+    height: 35px;
+    border-right: 1px solid rgba(0, 183, 255, .22);
+    border-bottom: 1px solid rgba(0, 183, 255, .22);
+    pointer-events: none;
+}
+
+/* GLOWING IMPORTANT VALUES */
+
+#totalScore,
+#roleMatchRate,
+#highestPackage,
+#averagePackage,
+#placementYearDisplay {
+    text-shadow: 0 0 16px currentColor;
+}
+
 </style>
 
 </head>
@@ -24,59 +620,62 @@
 <!-- LOGIN -->
 
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+
     <div class="glass-panel w-full max-w-md p-8 rounded-3xl border border-gray-800 shadow-2xl">
 
-```
-    <div class="text-center mb-8">
-        <div class="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-bold shadow-lg shadow-indigo-500/30">
-            N
+        <div class="text-center mb-8">
+
+            <div class="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-bold shadow-lg shadow-indigo-500/30">
+                N
+            </div>
+
+            <h1 class="text-2xl font-extrabold text-white mt-4">
+                Dexterity <span class="text-indigo-400">AI</span>
+            </h1>
+
+            <p class="text-xs text-gray-500 mt-2">
+                Dexterity Career & Risk Intelligence
+            </p>
+
         </div>
 
-        <h1 class="text-2xl font-extrabold text-white mt-4">
-            Dexterity <span class="text-indigo-400">AI</span>
-        </h1>
+        <div class="space-y-4">
 
-        <p class="text-xs text-gray-500 mt-2">
-            Dexterity Career & Risk Intelligence
-        </p>
-    </div>
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Username</label>
 
-    <div class="space-y-4">
+                <input
+                    id="loginUsername"
+                    type="text"
+                    placeholder="Enter username"
+                    class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500"
+                >
+            </div>
 
-        <div>
-            <label class="text-xs text-gray-400 block mb-1">Username</label>
-            <input
-                id="loginUsername"
-                type="text"
-                placeholder="Enter username"
-                class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500"
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Password</label>
+
+                <input
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Enter password"
+                    class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500"
+                >
+            </div>
+
+            <button
+                onclick="login()"
+                class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-bold transition"
             >
+                Enter Intelligence Portal
+            </button>
+
+            <p id="loginError" class="hidden text-center text-xs text-rose-400">
+                Please enter both username and password.
+            </p>
+
         </div>
-
-        <div>
-            <label class="text-xs text-gray-400 block mb-1">Password</label>
-            <input
-                id="loginPassword"
-                type="password"
-                placeholder="Enter password"
-                class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-indigo-500"
-            >
-        </div>
-
-        <button
-            onclick="login()"
-            class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-sm font-bold transition"
-        >
-            Enter Intelligence Portal
-        </button>
-
-        <p id="loginError" class="hidden text-center text-xs text-rose-400">
-            Please enter both username and password.
-        </p>
-
     </div>
-</div>
-```
 
 </div>
 
@@ -86,78 +685,81 @@
 
 <header class="border-b border-gray-800 bg-gray-900/50 backdrop-blur sticky top-0 z-40 px-6 py-3 flex items-center justify-between">
 
-```
-<div
-    class="flex items-center gap-3 cursor-pointer"
-    onclick="switchProject('hub')"
->
-    <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center font-bold">
-        N
-    </div>
-
-    <span class="font-extrabold text-sm tracking-wider uppercase">
-        DEXTERITY <span class="text-indigo-400">AI</span>
-    </span>
-</div>
-
-<nav class="flex items-center gap-2 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
-
-    <button
-        id="navHubBtn"
+    <div
+        class="flex items-center gap-3 cursor-pointer"
         onclick="switchProject('hub')"
-        class="px-4 py-2 rounded-lg text-xs font-bold text-indigo-400 bg-gray-800"
     >
-        <i class="fa-solid fa-layer-group"></i>
-        Project Hub
-    </button>
 
-    <button
-        id="navVerifierBtn"
-        onclick="switchProject('verifier')"
-        class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400"
-    >
-        <i class="fa-solid fa-shield-halved"></i>
-        Offer Verifier
-    </button>
+        <div class="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center font-bold">
+            N
+        </div>
 
-    <button
-        id="navAnalyzerBtn"
-        onclick="switchProject('analyzer')"
-        class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400"
-    >
-        <i class="fa-solid fa-chart-pie"></i>
-        Skill Gap AI
-    </button>
-
-    <button
-        id="navPlacementBtn"
-        onclick="switchProject('placement')"
-        class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400"
-    >
-        <i class="fa-solid fa-building-columns"></i>
-        Placement Intel
-    </button>
-
-</nav>
-
-<div class="flex items-center gap-4">
-
-    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-800">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="text-xs font-semibold text-emerald-400">
-            Python Backend
+        <span class="font-extrabold text-sm tracking-wider uppercase">
+            DEXTERITY <span class="text-indigo-400">AI</span>
         </span>
+
     </div>
 
-    <button
-        onclick="logout()"
-        class="text-gray-400 hover:text-rose-400"
-    >
-        <i class="fa-solid fa-right-from-bracket"></i>
-    </button>
+    <nav class="flex items-center gap-2 bg-gray-900/80 p-1 rounded-xl border border-gray-800">
 
-</div>
-```
+        <button
+            id="navHubBtn"
+            onclick="switchProject('hub')"
+            class="px-4 py-2 rounded-lg text-xs font-bold text-indigo-400 bg-gray-800"
+        >
+            <i class="fa-solid fa-layer-group"></i>
+            Project Hub
+        </button>
+
+        <button
+            id="navVerifierBtn"
+            onclick="switchProject('verifier')"
+            class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400"
+        >
+            <i class="fa-solid fa-shield-halved"></i>
+            Offer Verifier
+        </button>
+
+        <button
+            id="navAnalyzerBtn"
+            onclick="switchProject('analyzer')"
+            class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400"
+        >
+            <i class="fa-solid fa-chart-pie"></i>
+            Skill Gap AI
+        </button>
+
+        <button
+            id="navPlacementBtn"
+            onclick="switchProject('placement')"
+            class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400"
+        >
+            <i class="fa-solid fa-building-columns"></i>
+            Placement Intel
+        </button>
+
+    </nav>
+
+    <div class="flex items-center gap-4">
+
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-900 border border-gray-800">
+
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+
+            <span class="text-xs font-semibold text-emerald-400">
+                Python Backend
+            </span>
+
+        </div>
+
+        <button
+            onclick="logout()"
+            class="text-gray-400 hover:text-rose-400"
+        >
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+
+    </div>
 
 </header>
 
@@ -167,88 +769,90 @@
 
 <section id="viewHub" class="space-y-6">
 
-```
-<div class="text-center max-w-2xl mx-auto my-8">
+    <div class="text-center max-w-2xl mx-auto my-8">
 
-    <h1 class="text-3xl font-extrabold text-white mb-2">
-        Dexterity Career & Risk Intelligence
-    </h1>
+        <h1 class="text-3xl font-extrabold text-white mb-2">
+            Dexterity Career & Risk Intelligence
+        </h1>
 
-    <p class="text-sm text-gray-400">
-        Select an engine below to analyze job offers, evaluate career readiness, or explore university placement intelligence.
-    </p>
-
-</div>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-    <div
-        onclick="switchProject('verifier')"
-        class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-emerald-500/50 transition cursor-pointer"
-    >
-        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-4">
-            <i class="fa-solid fa-shield-halved"></i>
-        </div>
-
-        <h3 class="text-lg font-bold text-white mb-1">
-            DEXTERITY Offer Verifier
-        </h3>
-
-        <p class="text-xs text-gray-400 mb-4">
-            Verify job offers using text, files, URLs or email input.
+        <p class="text-sm text-gray-400">
+            Select an engine below to analyze job offers, evaluate career readiness, or explore university placement intelligence.
         </p>
 
-        <span class="text-xs font-bold text-emerald-400">
-            Launch Verifier →
-        </span>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-    <div
-        onclick="switchProject('analyzer')"
-        class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-purple-500/50 transition cursor-pointer"
-    >
-        <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl mb-4">
-            <i class="fa-solid fa-chart-pie"></i>
+        <div
+            onclick="switchProject('verifier')"
+            class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-emerald-500/50 transition cursor-pointer"
+        >
+
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <h3 class="text-lg font-bold text-white mb-1">
+                DEXTERITY Offer Verifier
+            </h3>
+
+            <p class="text-xs text-gray-400 mb-4">
+                Verify job offers using text, files, URLs or email input.
+            </p>
+
+            <span class="text-xs font-bold text-emerald-400">
+                Launch Verifier →
+            </span>
+
         </div>
 
-        <h3 class="text-lg font-bold text-white mb-1">
-            Skill Gap Analyser AI
-        </h3>
+        <div
+            onclick="switchProject('analyzer')"
+            class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-purple-500/50 transition cursor-pointer"
+        >
 
-        <p class="text-xs text-gray-400 mb-4">
-            Analyze your skills against target engineering roles and job requirements.
-        </p>
+            <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
 
-        <span class="text-xs font-bold text-purple-400">
-            Launch Analyzer →
-        </span>
-    </div>
+            <h3 class="text-lg font-bold text-white mb-1">
+                Skill Gap Analyser AI
+            </h3>
 
+            <p class="text-xs text-gray-400 mb-4">
+                Analyze your skills against target engineering roles and job requirements.
+            </p>
 
-    <div
-        onclick="switchProject('placement')"
-        class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-indigo-500/50 transition cursor-pointer"
-    >
-        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl mb-4">
-            <i class="fa-solid fa-building-columns"></i>
+            <span class="text-xs font-bold text-purple-400">
+                Launch Analyzer →
+            </span>
+
         </div>
 
-        <h3 class="text-lg font-bold text-white mb-1">
-            University Placement Intelligence
-        </h3>
+        <div
+            onclick="switchProject('placement')"
+            class="glass-panel p-6 rounded-2xl border border-gray-800 hover:border-indigo-500/50 transition cursor-pointer"
+        >
 
-        <p class="text-xs text-gray-400 mb-4">
-            Explore university, branch and year-wise placement statistics.
-        </p>
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-building-columns"></i>
+            </div>
 
-        <span class="text-xs font-bold text-indigo-400">
-            Launch Placement Intel →
-        </span>
+            <h3 class="text-lg font-bold text-white mb-1">
+                University Placement Intelligence
+            </h3>
+
+            <p class="text-xs text-gray-400 mb-4">
+                Explore university, branch and year-wise placement statistics.
+            </p>
+
+            <span class="text-xs font-bold text-indigo-400">
+                Launch Placement Intel →
+            </span>
+
+        </div>
+
     </div>
-
-</div>
-```
 
 </section>
 
@@ -276,7 +880,6 @@ Choose Input Method
 id="inputMethod"
 onchange="changeInputMethod()"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-xs text-white"
-
 >
 
 <option value="text">Paste Offer Text</option>
@@ -284,6 +887,7 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-xs text-w
 <option value="pdf">Upload PDF</option>
 <option value="url">Job Offer URL</option>
 <option value="email">Email Offer</option>
+
 </select>
 
 </div>
@@ -302,18 +906,16 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-gra
 <button
 onclick="loadSampleOffer('legit')"
 class="flex-1 py-1.5 bg-gray-900 rounded-lg text-[11px] border border-gray-800"
-
 >
-
-Sample Legit </button>
+Sample Legit
+</button>
 
 <button
 onclick="loadSampleOffer('scam')"
 class="flex-1 py-1.5 bg-gray-900 rounded-lg text-[11px] text-rose-300 border border-gray-800"
-
 >
-
-Sample Scam </button>
+Sample Scam
+</button>
 
 </div>
 
@@ -388,18 +990,16 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-whi
 <button
 onclick="verifyOffer()"
 class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs font-bold"
-
 >
-
-Analyze Risk </button>
+Analyze Risk
+</button>
 
 <button
 onclick="clearOffer()"
 class="px-4 py-2 bg-gray-900 rounded-xl text-xs font-bold text-gray-400"
-
 >
-
-Clear </button>
+Clear
+</button>
 
 </div>
 
@@ -432,10 +1032,9 @@ Submit an offer to display the verification analysis.
 <span
 id="scoreTag"
 class="text-[10px] font-bold uppercase px-2 py-1 rounded bg-emerald-500/20 text-emerald-300"
-
 >
-
-Verified </span>
+Verified
+</span>
 
 <h2 class="text-xl font-bold text-white mt-2">
 Legitimacy Assessment
@@ -487,6 +1086,7 @@ Automated Safety Checks
 <div class="flex items-center justify-between mb-5">
 
 <div>
+
 <h3 class="text-lg font-bold text-white">
 Skill Gap AI
 </h3>
@@ -494,6 +1094,7 @@ Skill Gap AI
 <p class="text-xs text-gray-500 mt-1">
 Compare your current competencies with the skills expected for your target role.
 </p>
+
 </div>
 
 <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center">
@@ -513,7 +1114,6 @@ Target Engineering Role
 <select
 id="targetRoleSelect"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-
 >
 
 <option value="fullstack_dev">
@@ -554,16 +1154,14 @@ type="text"
 placeholder="e.g. Python, Docker, SQL"
 class="flex-1 bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-purple-500"
 onkeydown="if(event.key==='Enter') addSkillFromInput()"
-
 >
 
 <button
 onclick="addSkillFromInput()"
 class="px-4 bg-gray-800 hover:bg-gray-700 rounded-xl text-xs font-bold"
-
 >
-
-Add </button>
+Add
+</button>
 
 </div>
 
@@ -582,10 +1180,9 @@ Current Active Skills
 <span
 id="skillCount"
 class="text-[10px] text-gray-500"
-
 >
-
-0 skills </span>
+0 skills
+</span>
 
 </div>
 
@@ -599,7 +1196,6 @@ class="min-h-[60px] p-3 rounded-xl bg-gray-950 border border-gray-800 flex flex-
 <button
 onclick="runSkillGapAnalysis()"
 class="w-full mt-5 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl text-xs font-bold"
-
 >
 
 <i class="fa-solid fa-bolt mr-2"></i>
@@ -703,6 +1299,7 @@ Personalized 4-Week Skill Roadmap
 <div class="flex items-center justify-between mb-5">
 
 <div>
+
 <h3 class="text-lg font-bold text-white">
 Resume Skill & Job Eligibility Analyzer
 </h3>
@@ -710,6 +1307,7 @@ Resume Skill & Job Eligibility Analyzer
 <p class="text-xs text-gray-500 mt-1">
 Upload a DOCX resume and compare it against a specific job.
 </p>
+
 </div>
 
 <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
@@ -730,7 +1328,6 @@ Job Category
 id="categorySelect"
 onchange="loadJobs()"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-
 >
 
 <option value="">
@@ -751,7 +1348,6 @@ Target Job
 id="jobSelect"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
 disabled
-
 >
 
 <option value="">
@@ -773,7 +1369,6 @@ id="resumeFile"
 type="file"
 accept=".docx"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-xs text-gray-400"
-
 >
 
 </div>
@@ -783,10 +1378,11 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-xs text-g
 <button
 onclick="analyzeResume()"
 class="w-full mt-5 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-bold"
-
 >
 
-Analyze Resume </button>
+Analyze Resume
+
+</button>
 
 </div>
 
@@ -888,6 +1484,7 @@ Experience Requirement
 <div class="flex items-center justify-between mb-5">
 
 <div>
+
 <h3 class="text-lg font-bold text-white">
 University Placement Intelligence
 </h3>
@@ -895,6 +1492,7 @@ University Placement Intelligence
 <p class="text-xs text-gray-500 mt-1">
 Explore placement statistics by university, branch and academic year.
 </p>
+
 </div>
 
 <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
@@ -915,7 +1513,6 @@ University
 id="universitySelect"
 onchange="loadBranches()"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-
 >
 
 <option value="">
@@ -936,7 +1533,6 @@ Branch
 id="branchSelect"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
 disabled
-
 >
 
 <option value="">
@@ -956,10 +1552,7 @@ Placement Year
 <select
 id="placementYear"
 class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-
 >
-
-<!-- universities.py currently contains 2025 data -->
 
 <option value="2025">2025</option>
 
@@ -972,7 +1565,6 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-whi
 <button
 onclick="loadPlacementData()"
 class="w-full mt-5 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-bold"
-
 >
 
 <i class="fa-solid fa-magnifying-glass mr-2"></i>
@@ -987,8 +1579,6 @@ class="text-[10px] text-gray-500 mt-3"
 
 </div>
 
-<!-- PLACEHOLDER -->
-
 <div
 id="placementPlaceholder"
 class="glass-panel p-12 rounded-2xl border border-gray-800 text-center"
@@ -1001,8 +1591,6 @@ Select a university and branch to display placement intelligence.
 </p>
 
 </div>
-
-<!-- RESULTS -->
 
 <div
 id="placementResult"
@@ -1155,10 +1743,9 @@ Notice
 <button
 onclick="closeModal()"
 class="w-full mt-5 py-2 bg-indigo-600 rounded-xl text-xs font-bold"
-
 >
-
-Dismiss </button>
+Dismiss
+</button>
 
 </div>
 
@@ -1167,7 +1754,6 @@ Dismiss </button>
 <script>
 
 const API = "http://127.0.0.1:8000";
-
 
 /* LOGIN */
 
@@ -1199,7 +1785,6 @@ function login() {
 
 }
 
-
 function logout() {
 
     document.getElementById("appPortal")
@@ -1209,7 +1794,6 @@ function logout() {
         .classList.remove("hidden");
 
 }
-
 
 /* NAVIGATION */
 
@@ -1227,7 +1811,6 @@ function switchProject(view) {
     document.getElementById("viewPlacement")
         .classList.add("hidden");
 
-
     document.getElementById("navHubBtn").className =
         "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
 
@@ -1240,7 +1823,6 @@ function switchProject(view) {
     document.getElementById("navPlacementBtn").className =
         "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
 
-
     if (view === "hub") {
 
         document.getElementById("viewHub")
@@ -1251,7 +1833,6 @@ function switchProject(view) {
 
     }
 
-
     if (view === "verifier") {
 
         document.getElementById("viewVerifier")
@@ -1261,7 +1842,6 @@ function switchProject(view) {
             "px-4 py-2 rounded-lg text-xs font-bold text-emerald-400 bg-gray-800";
 
     }
-
 
     if (view === "analyzer") {
 
@@ -1276,7 +1856,6 @@ function switchProject(view) {
 
     }
 
-
     if (view === "placement") {
 
         document.getElementById("viewPlacement")
@@ -1290,7 +1869,6 @@ function switchProject(view) {
     }
 
 }
-
 
 /* OFFER INPUT */
 
@@ -1311,14 +1889,12 @@ function changeInputMethod() {
     document.getElementById("emailInput")
         .classList.add("hidden");
 
-
     if (method === "text") {
 
         document.getElementById("textInput")
             .classList.remove("hidden");
 
     }
-
 
     if (method === "txt" || method === "pdf") {
 
@@ -1333,14 +1909,12 @@ function changeInputMethod() {
 
     }
 
-
     if (method === "url") {
 
         document.getElementById("urlInput")
             .classList.remove("hidden");
 
     }
-
 
     if (method === "email") {
 
@@ -1350,7 +1924,6 @@ function changeInputMethod() {
     }
 
 }
-
 
 async function verifyOffer() {
 
@@ -1365,7 +1938,6 @@ async function verifyOffer() {
         status.innerText = "Reading offer...";
 
         let text = "";
-
 
         if (method === "text") {
 
@@ -1386,7 +1958,6 @@ async function verifyOffer() {
 
         }
 
-
         if (method === "txt" || method === "pdf") {
 
             const file =
@@ -1404,18 +1975,15 @@ async function verifyOffer() {
 
             }
 
-
             const formData =
                 new FormData();
 
             formData.append("file", file);
 
-
             const endpoint =
                 method === "txt"
                 ? "/read-txt"
                 : "/read-pdf";
-
 
             const response =
                 await fetch(API + endpoint, {
@@ -1423,10 +1991,8 @@ async function verifyOffer() {
                     body: formData
                 });
 
-
             const data =
                 await response.json();
-
 
             if (!response.ok) {
 
@@ -1437,18 +2003,15 @@ async function verifyOffer() {
 
             }
 
-
             text = data.text;
 
         }
-
 
         if (method === "url") {
 
             const url =
                 document.getElementById("offerUrl")
                 .value.trim();
-
 
             if (!url) {
 
@@ -1462,7 +2025,6 @@ async function verifyOffer() {
 
             }
 
-
             const response =
                 await fetch(
                     API +
@@ -1470,10 +2032,8 @@ async function verifyOffer() {
                     encodeURIComponent(url)
                 );
 
-
             const data =
                 await response.json();
-
 
             if (!response.ok) {
 
@@ -1484,11 +2044,9 @@ async function verifyOffer() {
 
             }
 
-
             text = data.text;
 
         }
-
 
         if (method === "email") {
 
@@ -1499,7 +2057,6 @@ async function verifyOffer() {
             const password =
                 document.getElementById("appPassword")
                 .value;
-
 
             if (!email || !password) {
 
@@ -1512,7 +2069,6 @@ async function verifyOffer() {
                 return;
 
             }
-
 
             const response =
                 await fetch(API + "/read-email", {
@@ -1530,10 +2086,8 @@ async function verifyOffer() {
 
                 });
 
-
             const data =
                 await response.json();
-
 
             if (!response.ok) {
 
@@ -1544,15 +2098,12 @@ async function verifyOffer() {
 
             }
 
-
             text = data.text;
 
         }
 
-
         status.innerText =
             "Running verification checks...";
-
 
         const verifyResponse =
             await fetch(API + "/verify", {
@@ -1569,10 +2120,8 @@ async function verifyOffer() {
 
             });
 
-
         const result =
             await verifyResponse.json();
-
 
         if (!verifyResponse.ok) {
 
@@ -1582,7 +2131,6 @@ async function verifyOffer() {
             );
 
         }
-
 
         displayVerificationResult(result);
 
@@ -1604,7 +2152,6 @@ async function verifyOffer() {
 
 }
 
-
 function displayVerificationResult(result) {
 
     document.getElementById("verifierPlaceholder")
@@ -1613,22 +2160,18 @@ function displayVerificationResult(result) {
     document.getElementById("resultsSection")
         .classList.remove("hidden");
 
-
     const score =
         result.total_score ??
         result.score ??
         result.total ??
         0;
 
-
     document.getElementById("totalScore")
         .innerText =
         score + "/100";
 
-
     const tag =
         document.getElementById("scoreTag");
-
 
     if (score >= 70) {
 
@@ -1648,12 +2191,10 @@ function displayVerificationResult(result) {
 
     }
 
-
     const checks =
         document.getElementById("checks");
 
     checks.innerHTML = "";
-
 
     if (result.checks) {
 
@@ -1665,7 +2206,6 @@ function displayVerificationResult(result) {
 
             const passed =
                 check.passed === true;
-
 
             checks.innerHTML += `
 
@@ -1707,7 +2247,6 @@ function displayVerificationResult(result) {
 
 }
 
-
 function clearOffer() {
 
     document.getElementById("rawText").value = "";
@@ -1724,7 +2263,6 @@ function clearOffer() {
         .classList.add("hidden");
 
 }
-
 
 function loadSampleOffer(type) {
 
@@ -1753,7 +2291,6 @@ You must wire $250 via Zelle to purchase equipment before starting.`;
 
 }
 
-
 /* SKILL GAP AI */
 
 let userSkills = [
@@ -1763,7 +2300,6 @@ let userSkills = [
     "React",
     "Git"
 ];
-
 
 const BENCHMARKS = {
 
@@ -1832,7 +2368,6 @@ const BENCHMARKS = {
 
 };
 
-
 function normalizeSkill(skill) {
 
     return skill
@@ -1842,7 +2377,6 @@ function normalizeSkill(skill) {
 
 }
 
-
 function renderSkillBadges() {
 
     const container =
@@ -1851,12 +2385,9 @@ function renderSkillBadges() {
     const count =
         document.getElementById("skillCount");
 
-
     if (!container || !count) return;
 
-
     container.innerHTML = "";
-
 
     userSkills.forEach((skill, index) => {
 
@@ -1879,11 +2410,9 @@ function renderSkillBadges() {
 
     });
 
-
     count.innerText =
         userSkills.length +
         (userSkills.length === 1 ? " skill" : " skills");
-
 
     if (userSkills.length === 0) {
 
@@ -1896,7 +2425,6 @@ function renderSkillBadges() {
 
 }
 
-
 function addSkillFromInput() {
 
     const input =
@@ -1905,9 +2433,7 @@ function addSkillFromInput() {
     const skill =
         input.value.trim();
 
-
     if (!skill) return;
-
 
     const exists =
         userSkills.some(
@@ -1915,7 +2441,6 @@ function addSkillFromInput() {
                 normalizeSkill(existing) ===
                 normalizeSkill(skill)
         );
-
 
     if (exists) {
 
@@ -1929,7 +2454,6 @@ function addSkillFromInput() {
 
     }
 
-
     userSkills.push(skill);
 
     input.value = "";
@@ -1937,7 +2461,6 @@ function addSkillFromInput() {
     renderSkillBadges();
 
 }
-
 
 function removeSkill(index) {
 
@@ -1947,48 +2470,38 @@ function removeSkill(index) {
 
 }
 
-
 function runSkillGapAnalysis() {
 
     const role =
         document.getElementById("targetRoleSelect").value;
 
-
     const benchmark =
         BENCHMARKS[role];
 
-
     if (!benchmark) return;
-
 
     const current =
         userSkills.map(normalizeSkill);
-
 
     const matched =
         benchmark.filter(skill =>
             current.includes(normalizeSkill(skill))
         );
 
-
     const missing =
         benchmark.filter(skill =>
             !current.includes(normalizeSkill(skill))
         );
-
 
     const matchRate =
         Math.round(
             (matched.length / benchmark.length) * 100
         );
 
-
     const gapRate =
         100 - matchRate;
 
-
     let status = "";
-
 
     if (matchRate >= 80) {
         status = "Highly Ready";
@@ -2000,28 +2513,22 @@ function runSkillGapAnalysis() {
         status = "Needs Improvement";
     }
 
-
     document.getElementById("skillGapResults")
         .classList.remove("hidden");
-
 
     document.getElementById("roleMatchRate")
         .innerText =
         matchRate + "%";
 
-
     document.getElementById("skillGapRatio")
         .innerText =
         gapRate + "%";
 
-
     const statusElement =
         document.getElementById("readinessStatus");
 
-
     statusElement.innerText =
         status;
-
 
     if (matchRate >= 80) {
 
@@ -2045,12 +2552,10 @@ function runSkillGapAnalysis() {
 
     }
 
-
     const matchingContainer =
         document.getElementById("matchingSkills");
 
     matchingContainer.innerHTML = "";
-
 
     matched.forEach(skill => {
 
@@ -2064,7 +2569,6 @@ function runSkillGapAnalysis() {
 
     });
 
-
     if (!matched.length) {
 
         matchingContainer.innerHTML =
@@ -2074,12 +2578,10 @@ function runSkillGapAnalysis() {
 
     }
 
-
     const missingContainer =
         document.getElementById("missingSkills");
 
     missingContainer.innerHTML = "";
-
 
     missing.forEach(skill => {
 
@@ -2093,7 +2595,6 @@ function runSkillGapAnalysis() {
 
     });
 
-
     if (!missing.length) {
 
         missingContainer.innerHTML =
@@ -2103,11 +2604,9 @@ function runSkillGapAnalysis() {
 
     }
 
-
     generateRoadmap(missing);
 
 }
-
 
 function generateRoadmap(missing) {
 
@@ -2116,14 +2615,12 @@ function generateRoadmap(missing) {
 
     roadmap.innerHTML = "";
 
-
     const weeks = [
         "Week 1",
         "Week 2",
         "Week 3",
         "Week 4"
     ];
-
 
     weeks.forEach((week, index) => {
 
@@ -2134,7 +2631,6 @@ function generateRoadmap(missing) {
                 4
             );
 
-
         const end =
             Math.floor(
                 (index + 1) *
@@ -2142,10 +2638,8 @@ function generateRoadmap(missing) {
                 4
             );
 
-
         let skills =
             missing.slice(start, end);
-
 
         if (!skills.length && missing.length) {
 
@@ -2159,7 +2653,6 @@ function generateRoadmap(missing) {
             ];
 
         }
-
 
         roadmap.innerHTML += `
 
@@ -2193,7 +2686,6 @@ function generateRoadmap(missing) {
 
 }
 
-
 /* RESUME ELIGIBILITY */
 
 async function loadCategories() {
@@ -2201,19 +2693,15 @@ async function loadCategories() {
     const select =
         document.getElementById("categorySelect");
 
-
     if (!select) return;
-
 
     try {
 
         const response =
             await fetch(API + "/job-categories");
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -2224,10 +2712,8 @@ async function loadCategories() {
 
         }
 
-
         select.innerHTML =
             `<option value="">Select a category</option>`;
-
 
         (data.categories || [])
         .forEach(category => {
@@ -2235,10 +2721,8 @@ async function loadCategories() {
             const option =
                 document.createElement("option");
 
-
             option.value =
                 category;
-
 
             option.textContent =
                 category
@@ -2246,7 +2730,6 @@ async function loadCategories() {
                     .replace(/\b\w/g, c =>
                         c.toUpperCase()
                     );
-
 
             select.appendChild(option);
 
@@ -2265,26 +2748,21 @@ async function loadCategories() {
 
 }
 
-
 async function loadJobs() {
 
     const category =
         document.getElementById("categorySelect")
         .value;
 
-
     const jobSelect =
         document.getElementById("jobSelect");
-
 
     jobSelect.innerHTML =
         `<option value="">
             Loading jobs...
         </option>`;
 
-
     jobSelect.disabled = true;
-
 
     if (!category) {
 
@@ -2297,7 +2775,6 @@ async function loadJobs() {
 
     }
 
-
     try {
 
         const response =
@@ -2307,10 +2784,8 @@ async function loadJobs() {
                 encodeURIComponent(category)
             );
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -2321,12 +2796,10 @@ async function loadJobs() {
 
         }
 
-
         jobSelect.innerHTML =
             `<option value="">
                 Select a job
             </option>`;
-
 
         (data.jobs || [])
         .forEach(job => {
@@ -2334,19 +2807,15 @@ async function loadJobs() {
             const option =
                 document.createElement("option");
 
-
             option.value =
                 job;
-
 
             option.textContent =
                 job;
 
-
             jobSelect.appendChild(option);
 
         });
-
 
         jobSelect.disabled = false;
 
@@ -2363,23 +2832,19 @@ async function loadJobs() {
 
 }
 
-
 async function analyzeResume() {
 
     const category =
         document.getElementById("categorySelect")
         .value;
 
-
     const job =
         document.getElementById("jobSelect")
         .value;
 
-
     const resume =
         document.getElementById("resumeFile")
         .files[0];
-
 
     if (!category) {
 
@@ -2392,7 +2857,6 @@ async function analyzeResume() {
 
     }
 
-
     if (!job) {
 
         showModal(
@@ -2403,7 +2867,6 @@ async function analyzeResume() {
         return;
 
     }
-
 
     if (!resume) {
 
@@ -2416,28 +2879,23 @@ async function analyzeResume() {
 
     }
 
-
     const formData =
         new FormData();
-
 
     formData.append(
         "category",
         category
     );
 
-
     formData.append(
         "job",
         job
     );
 
-
     formData.append(
         "resume",
         resume
     );
-
 
     try {
 
@@ -2450,10 +2908,8 @@ async function analyzeResume() {
                 }
             );
 
-
         const result =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -2463,7 +2919,6 @@ async function analyzeResume() {
             );
 
         }
-
 
         displayResumeResult(result);
 
@@ -2480,20 +2935,16 @@ async function analyzeResume() {
 
 }
 
-
 function displayResumeResult(result) {
 
     document.getElementById("resumeResult")
         .classList.remove("hidden");
 
-
     const status =
         document.getElementById("resumeStatus");
 
-
     status.innerText =
         result.status || "-";
-
 
     if (result.status === "Eligible") {
 
@@ -2514,25 +2965,20 @@ function displayResumeResult(result) {
 
     }
 
-
     document.getElementById("resumeScore")
         .innerText =
         (result.score ?? 0) + "/100";
 
-
     document.getElementById("resumeExperience")
         .innerText =
         `${result.candidate_experience_years ?? 0} years`;
-
 
     const matched =
         document.getElementById(
             "matchedRequirements"
         );
 
-
     matched.innerHTML = "";
-
 
     (
         result.matched_requirements ||
@@ -2549,7 +2995,6 @@ function displayResumeResult(result) {
 
     });
 
-
     if (!matched.innerHTML) {
 
         matched.innerHTML =
@@ -2559,15 +3004,12 @@ function displayResumeResult(result) {
 
     }
 
-
     const missing =
         document.getElementById(
             "missingRequirements"
         );
 
-
     missing.innerHTML = "";
-
 
     (
         result.remaining_requirements ||
@@ -2585,7 +3027,6 @@ function displayResumeResult(result) {
 
     });
 
-
     if (!missing.innerHTML) {
 
         missing.innerHTML =
@@ -2594,7 +3035,6 @@ function displayResumeResult(result) {
             </span>`;
 
     }
-
 
     document.getElementById("experienceDetails")
         .innerText =
@@ -2616,7 +3056,6 @@ function displayResumeResult(result) {
 
 }
 
-
 /* UNIVERSITY PLACEMENT INTELLIGENCE */
 
 async function loadUniversities() {
@@ -2626,22 +3065,18 @@ async function loadUniversities() {
 
     if (!select) return;
 
-
     select.innerHTML =
         `<option value="">
             Loading universities...
         </option>`;
-
 
     try {
 
         const response =
             await fetch(API + "/universities");
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -2652,12 +3087,10 @@ async function loadUniversities() {
 
         }
 
-
         select.innerHTML =
             `<option value="">
                 Select a university
             </option>`;
-
 
         (data.universities || [])
         .forEach(university => {
@@ -2665,29 +3098,23 @@ async function loadUniversities() {
             const option =
                 document.createElement("option");
 
-
             option.value =
                 university;
 
-
             option.textContent =
                 university;
-
 
             select.appendChild(option);
 
         });
 
-
         const branchSelect =
             document.getElementById("branchSelect");
-
 
         branchSelect.innerHTML =
             `<option value="">
                 Select university first
             </option>`;
-
 
         branchSelect.disabled =
             true;
@@ -2701,7 +3128,6 @@ async function loadUniversities() {
                 Backend unavailable
             </option>`;
 
-
         showModal(
             "Placement Backend Error",
             error.message
@@ -2711,20 +3137,16 @@ async function loadUniversities() {
 
 }
 
-
 async function loadBranches() {
 
     const university =
         document.getElementById("universitySelect")
         .value;
 
-
     const branchSelect =
         document.getElementById("branchSelect");
 
-
     branchSelect.disabled = true;
-
 
     if (!university) {
 
@@ -2737,34 +3159,23 @@ async function loadBranches() {
 
     }
 
-
     branchSelect.innerHTML =
         `<option value="">
             Loading branches...
         </option>`;
 
-
     try {
-
-        /*
-         * encodeURIComponent is important because
-         * university names can contain spaces and
-         * special characters.
-         */
 
         const endpoint =
             API +
             "/branches/" +
             encodeURIComponent(university);
 
-
         const response =
             await fetch(endpoint);
 
-
         const data =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -2775,12 +3186,10 @@ async function loadBranches() {
 
         }
 
-
         branchSelect.innerHTML =
             `<option value="">
                 Select a branch
             </option>`;
-
 
         (data.branches || [])
         .forEach(branch => {
@@ -2788,19 +3197,15 @@ async function loadBranches() {
             const option =
                 document.createElement("option");
 
-
             option.value =
                 branch;
-
 
             option.textContent =
                 branch;
 
-
             branchSelect.appendChild(option);
 
         });
-
 
         if ((data.branches || []).length === 0) {
 
@@ -2810,7 +3215,6 @@ async function loadBranches() {
                 </option>`;
 
         }
-
 
         branchSelect.disabled = false;
 
@@ -2823,7 +3227,6 @@ async function loadBranches() {
                 Could not load branches
             </option>`;
 
-
         showModal(
             "Branch Loading Error",
             error.message
@@ -2833,27 +3236,22 @@ async function loadBranches() {
 
 }
 
-
 async function loadPlacementData() {
 
     const university =
         document.getElementById("universitySelect")
         .value;
 
-
     const branch =
         document.getElementById("branchSelect")
         .value;
-
 
     const year =
         document.getElementById("placementYear")
         .value;
 
-
     const status =
         document.getElementById("placementStatus");
-
 
     if (!university) {
 
@@ -2866,7 +3264,6 @@ async function loadPlacementData() {
 
     }
 
-
     if (!branch) {
 
         showModal(
@@ -2878,10 +3275,8 @@ async function loadPlacementData() {
 
     }
 
-
     status.innerText =
         "Fetching placement intelligence...";
-
 
     try {
 
@@ -2894,14 +3289,11 @@ async function loadPlacementData() {
             "&year=" +
             encodeURIComponent(year);
 
-
         const response =
             await fetch(url);
 
-
         const result =
             await response.json();
-
 
         if (!response.ok) {
 
@@ -2912,30 +3304,24 @@ async function loadPlacementData() {
 
         }
 
-
         document.getElementById("placementPlaceholder")
             .classList.add("hidden");
-
 
         document.getElementById("placementResult")
             .classList.remove("hidden");
 
-
         document.getElementById("placementUniversity")
             .innerText =
             result.university || university;
-
 
         document.getElementById("placementBranch")
             .innerText =
             "Branch: " +
             (result.branch || branch);
 
-
         document.getElementById("placementYearDisplay")
             .innerText =
             result.year || year;
-
 
         document.getElementById("highestPackage")
             .innerText =
@@ -2943,18 +3329,15 @@ async function loadPlacementData() {
             ? result.highest_package + " LPA"
             : "Not disclosed";
 
-
         document.getElementById("averagePackage")
             .innerText =
             result.average_package != null
             ? result.average_package + " LPA"
             : "Not disclosed";
 
-
         document.getElementById("topCompany")
             .innerText =
             result.company || "Not disclosed";
-
 
         document.getElementById("placementSummary")
             .innerText =
@@ -2974,7 +3357,6 @@ async function loadPlacementData() {
                 result.company || "Not disclosed"
             }.`;
 
-
         status.innerText =
             "Placement data loaded successfully.";
 
@@ -2993,7 +3375,6 @@ async function loadPlacementData() {
 
 }
 
-
 /* MODAL */
 
 function showModal(title, message) {
@@ -3001,16 +3382,13 @@ function showModal(title, message) {
     document.getElementById("modalTitle")
         .innerText = title;
 
-
     document.getElementById("modalMessage")
         .innerText = message;
-
 
     document.getElementById("modalOverlay")
         .classList.remove("hidden");
 
 }
-
 
 function closeModal() {
 
@@ -3023,3 +3401,4 @@ function closeModal() {
 
 </body>
 </html>
+```
