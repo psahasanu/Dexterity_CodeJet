@@ -1,37 +1,51 @@
-import os
+import html
 import re
-import json
 from difflib import SequenceMatcher
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 from urllib.request import Request, urlopen
 
+from companies_dict import COMPANIES_BOX
+
 POINTS_PER_CHECK = 20
-OPENCORPORATES_URL = "https://api.opencorporates.com/v0.4/companies/search"
 
 ENTITY_SUFFIXES = [
-    "Inc", "Inc.", "LLC", "Ltd", "Ltd.", "Limited",
-    "Pvt Ltd", "Pvt. Ltd.", "Private Limited",
-    "Corp", "Corp.", "Corporation", "GmbH", "PLC",
-    "Co.", "LLP", "Group"
+    "Private Limited",
+    "Pvt. Ltd.",
+    "Pvt Ltd",
+    "Limited",
+    "Ltd.",
+    "Ltd",
+    "Corporation",
+    "Corp.",
+    "Corp",
+    "Incorporated",
+    "Inc.",
+    "Inc",
+    "LLC",
+    "LLP",
+    "GmbH",
+    "PLC",
+    "Company",
+    "Co.",
+    "Co",
+    "Group",
 ]
 
-def _extract_company_name(text: str):
-    suffix_pattern = "|".join(
-        re.escape(s) for s in sorted(ENTITY_SUFFIXES, key=len, reverse=True)
-    )
-    pattern = (
-        rf"\b([A-Za-z0-9][A-Za-z0-9&.,'()/-]*"
-        rf"(?:\s+[A-Za-z0-9][A-Za-z0-9&.,'()/-]*){{0,7}}\s+"
-        rf"(?:{suffix_pattern}))\b"
-    )
-    matches = re.findall(pattern, text or "", flags=re.IGNORECASE)
-    return matches[0].strip() if matches else None
 
-def _normalize_name(name: str) -> str:
-    name = (name or "").lower()
+# =========================================================
+# TEXT / NAME HELPERS
+# =========================================================
+
+def normalize_name(name):
+    if not name:
+        return ""
+
+    text = name.lower()
+
     replacements = {
-        "pvt ltd": "private limited",
         "pvt. ltd.": "private limited",
+        "pvt ltd": "private limited",
+        "private ltd": "private limited",
         "corp.": "corporation",
         "corp": "corporation",
         "inc.": "incorporated",
@@ -39,126 +53,567 @@ def _normalize_name(name: str) -> str:
         "ltd.": "limited",
         "ltd": "limited",
     }
+
     for old, new in replacements.items():
-        name = name.replace(old, new)
-    name = "".join(ch if ch.isalnum() or ch.isspace() else " " for ch in name)
-    return " ".join(name.split())
+        text = text.replace(old, new)
 
-def _name_similarity(a: str, b: str) -> float:
-    return SequenceMatcher(None, _normalize_name(a), _normalize_name(b)).ratio()
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    return " ".join(text.split())
 
-def _search_opencorporates(company_name: str):
-    token = os.getenv("OPENCORPORATES_API_TOKEN")
-    if not token:
-        return {"success": False, "error": "OPENCORPORATES_API_TOKEN is not set."}
 
-    params = (
-        f"?q={quote(company_name)}"
-        f"&order=score&per_page=10&api_token={quote(token)}"
-    )
-    request = Request(
-        OPENCORPORATES_URL + params,
-        headers={"User-Agent": "DEXTERITY-JobOfferVerifier/1.0"}
-    )
+def name_similarity(a, b):
+    a = normalize_name(a)
+    b = normalize_name(b)
 
-    try:
-        with urlopen(request, timeout=15) as response:
-            data = json.loads(response.read().decode("utf-8"))
-        companies = data.get("results", {}).get("companies", [])
-        return {"success": True, "companies": companies}
-    except Exception as exc:
-        return {"success": False, "error": f"OpenCorporates request failed: {exc}"}
+    if not a or not b:
+        return 0.0
 
-def check_1_company_exists(offer_text: str) -> dict:
-    company_name = _extract_company_name(offer_text)
+    return SequenceMatcher(None, a, b).ratio()
 
+
+def extract_company_name(text):
+    if not text:
+        return None
+
+    patterns = [
+        r"\b(?:company|employer|organization)\s*[:\-]\s*([^\n,]+)",
+        r"\b(?:at|with|from|join|joining)\s+"
+        r"([A-Za-z0-9&.'()/-]+(?:\s+[A-Za-z0-9&.'()/-]+){0,6})",
+    ]
+
+    candidates = []
+
+    for pattern in patterns:
+        for match in re.finditer(
+            pattern,
+            text,
+            flags=re.IGNORECASE,
+        ):
+            value = match.group(1).strip()
+
+            value = re.split(
+                r"\b(?:for|as|on|offering|with a salary|salary)\b",
+                value,
+                maxsplit=1,
+                flags=re.IGNORECASE,
+            )[0].strip()
+
+            if value:
+                candidates.append(value)
+
+    # Prefer names containing a business suffix.
+    for candidate in candidates:
+        normalized = normalize_name(candidate)
+
+        if any(
+            suffix.lower() in normalized
+            for suffix in [
+                "limited",
+                "private limited",
+                "corporation",
+                "incorporated",
+                "llc",
+                "llp",
+                "gmbh",
+                "plc",
+            ]
+        ):
+            return candidate
+
+    if candidates:
+        return candidates[0]
+
+    # Last-resort search for known local company names.
+    lower_text = text.lower()
+
+    for company in COMPANIES_BOX:
+        known = company.get("company_name", "")
+
+        if known and known.lower() in lower_text:
+            return known
+
+    return None
+
+
+def find_local_company(company_name):
     if not company_name:
-        return {
-            "passed": False, "points": 0, "company_name": None,
-            "reason": "No identifiable company name found in the offer."
-        }
-
-    api_result = _search_opencorporates(company_name)
-
-    if not api_result["success"]:
-        return {
-            "passed": None, "points": 0, "company_name": company_name,
-            "reason": api_result["error"]
-        }
-
-    companies = api_result["companies"]
-    if not companies:
-        return {
-            "passed": False, "points": 0, "company_name": company_name,
-            "reason": f"'{company_name}' was not found in the external company registry."
-        }
+        return None, 0.0
 
     best_match = None
     best_score = 0.0
-    for item in companies:
-        company = item.get("company", {})
-        registered_name = company.get("name", "")
-        score = _name_similarity(company_name, registered_name)
+
+    for company in COMPANIES_BOX:
+        known_name = company.get("company_name", "")
+
+        if not known_name:
+            continue
+
+        score = name_similarity(
+            company_name,
+            known_name,
+        )
+
         if score > best_score:
             best_score = score
             best_match = company
 
-    if best_match and best_score >= 0.80:
+    return best_match, best_score
+
+
+# =========================================================
+# WEB SEARCH
+# =========================================================
+
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 "
+    "(KHTML, like Gecko) "
+    "Chrome/139.0 Safari/537.36"
+)
+
+
+def search_google(company_name):
+    query = quote(
+        f'"{company_name}" official company website'
+    )
+
+    url = (
+        "https://www.google.com/search"
+        f"?q={query}&num=10"
+    )
+
+    request = Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+    )
+
+    try:
+        with urlopen(
+            request,
+            timeout=10,
+        ) as response:
+            page = response.read().decode(
+                "utf-8",
+                errors="ignore",
+            )
+
+    except Exception:
+        return []
+
+    page = html.unescape(page)
+
+    results = []
+
+    # Current/older Google result structures.
+    patterns = [
+        r'<a[^>]+href="/url\?q=([^"&]+)[^"]*"[^>]*>(.*?)</a>',
+        r'<a[^>]+href="(https?://[^"]+)"[^>]*>(.*?)</a>',
+    ]
+
+    for pattern in patterns:
+        matches = re.findall(
+            pattern,
+            page,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+
+        for raw_url, raw_title in matches:
+            parsed = urlparse(raw_url)
+
+            if parsed.netloc.lower().endswith(
+                "google.com"
+            ):
+                continue
+
+            title = re.sub(
+                r"<[^>]+>",
+                " ",
+                raw_title,
+            )
+
+            title = re.sub(
+                r"\s+",
+                " ",
+                title,
+            ).strip()
+
+            if not title:
+                continue
+
+            results.append(
+                {
+                    "title": title,
+                    "url": raw_url,
+                    "snippet": "",
+                }
+            )
+
+    return unique_results(results)[:10]
+
+
+def search_duckduckgo(company_name):
+    query = quote(
+        f'"{company_name}" official company website'
+    )
+
+    url = (
+        "https://html.duckduckgo.com/html/"
+        f"?q={query}"
+    )
+
+    request = Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+        },
+    )
+
+    try:
+        with urlopen(
+            request,
+            timeout=10,
+        ) as response:
+            page = response.read().decode(
+                "utf-8",
+                errors="ignore",
+            )
+
+    except Exception:
+        return []
+
+    results = []
+
+    pattern = (
+        r'class="result__a"[^>]+href="([^"]+)"'
+        r'[^>]*>(.*?)</a>'
+    )
+
+    for raw_url, raw_title in re.findall(
+        pattern,
+        page,
+        flags=re.IGNORECASE | re.DOTALL,
+    ):
+        title = re.sub(
+            r"<[^>]+>",
+            " ",
+            raw_title,
+        )
+
+        title = re.sub(
+            r"\s+",
+            " ",
+            title,
+        ).strip()
+
+        if title:
+            results.append(
+                {
+                    "title": title,
+                    "url": raw_url,
+                    "snippet": "",
+                }
+            )
+
+    return unique_results(results)[:10]
+
+
+def unique_results(results):
+    unique = []
+    seen = set()
+
+    for result in results:
+        url = result.get("url", "").strip()
+
+        if not url or url in seen:
+            continue
+
+        seen.add(url)
+        unique.append(result)
+
+    return unique
+
+
+# =========================================================
+# WEB EVIDENCE
+# =========================================================
+
+def domain_matches_company(domain, company_name):
+    if not domain or not company_name:
+        return False
+
+    domain = domain.lower().replace("www.", "")
+
+    company_words = re.findall(
+        r"[a-z0-9]+",
+        normalize_name(company_name),
+    )
+
+    if not company_words:
+        return False
+
+    domain_text = domain.replace(".", " ")
+
+    # Require at least one meaningful company word.
+    meaningful = [
+        word
+        for word in company_words
+        if len(word) >= 4
+        and word not in {
+            "limited",
+            "private",
+            "corporation",
+            "incorporated",
+            "company",
+            "group",
+        }
+    ]
+
+    return any(
+        word in domain_text
+        for word in meaningful
+    )
+
+
+def score_web_evidence(company_name, results):
+    if not results:
+        return {
+            "score": 0.0,
+            "best_result": None,
+            "official_domain": None,
+        }
+
+    best_score = 0.0
+    best_result = None
+
+    for result in results:
+        title = result.get("title", "")
+        url = result.get("url", "")
+        snippet = result.get("snippet", "")
+
+        parsed = urlparse(url)
+        domain = parsed.netloc.lower().replace(
+            "www.",
+            "",
+        )
+
+        score = 0.0
+
+        title_score = name_similarity(
+            company_name,
+            title,
+        )
+
+        if title_score >= 0.85:
+            score += 0.55
+        elif title_score >= 0.70:
+            score += 0.40
+        elif title_score >= 0.50:
+            score += 0.25
+
+        if domain_matches_company(
+            domain,
+            company_name,
+        ):
+            score += 0.30
+
+        combined = (
+            f"{title} {snippet}"
+        ).lower()
+
+        if any(
+            word in combined
+            for word in [
+                "official",
+                "careers",
+                "about us",
+                "corporate",
+                "investor",
+            ]
+        ):
+            score += 0.10
+
+        score = min(score, 1.0)
+
+        if score > best_score:
+            best_score = score
+            best_result = result
+
+    official_domain = None
+
+    if best_result:
+        official_domain = urlparse(
+            best_result.get("url", "")
+        ).netloc.lower()
+
+        official_domain = official_domain.replace(
+            "www.",
+            "",
+        )
+
+    return {
+        "score": round(best_score, 3),
+        "best_result": best_result,
+        "official_domain": official_domain,
+    }
+
+
+# =========================================================
+# CHECK 1
+# =========================================================
+
+def check_1_company_exists(offer_text):
+    company_name = extract_company_name(
+        offer_text
+    )
+
+    if not company_name:
+        return {
+            "passed": False,
+            "points": 0,
+            "company_name": None,
+            "reason": (
+                "No identifiable company name "
+                "was found in the offer."
+            ),
+        }
+
+    local_match, local_score = find_local_company(
+        company_name
+    )
+
+    results = search_google(
+        company_name
+    )
+
+    search_source = "Google"
+
+    if not results:
+        results = search_duckduckgo(
+            company_name
+        )
+        search_source = "DuckDuckGo"
+
+    evidence = score_web_evidence(
+        company_name,
+        results,
+    )
+
+    web_score = evidence["score"]
+
+    # Strong web evidence.
+    if web_score >= 0.75:
         return {
             "passed": True,
-            "points": POINTS_PER_CHECK,
+            "points": 20,
             "company_name": company_name,
-            "matched_name": best_match.get("name"),
-            "jurisdiction": best_match.get("jurisdiction_code"),
-            "company_number": best_match.get("company_number"),
-            "status": best_match.get("current_status"),
-            "registry_url": best_match.get("opencorporates_url"),
-            "match_score": round(best_score, 3),
-            "reason": f"'{company_name}' matched an external company record."
+            "matched_name": (
+                local_match.get("company_name")
+                if local_match and local_score >= 0.80
+                else company_name
+            ),
+            "official_domain": (
+                evidence["official_domain"]
+            ),
+            "local_database_match": (
+                local_match is not None
+                and local_score >= 0.80
+            ),
+            "match_score": web_score,
+            "search_source": search_source,
+            "search_results": results[:5],
+            "reason": (
+                f"Strong public-web evidence was found "
+                f"for '{company_name}'."
+            ),
+        }
+
+    # Strong local + moderate web evidence.
+    if (
+        local_match
+        and local_score >= 0.90
+        and web_score >= 0.45
+    ):
+        return {
+            "passed": True,
+            "points": 20,
+            "company_name": company_name,
+            "matched_name": local_match.get(
+                "company_name"
+            ),
+            "official_domain": local_match.get(
+                "official_domain"
+            ),
+            "local_database_match": True,
+            "match_score": round(
+                max(
+                    local_score,
+                    web_score,
+                ),
+                3,
+            ),
+            "search_source": search_source,
+            "search_results": results[:5],
+            "reason": (
+                f"'{company_name}' closely matches "
+                f"a local company record and has "
+                f"supporting web evidence."
+            ),
+        }
+
+    # Moderate evidence.
+    if web_score >= 0.50:
+        return {
+            "passed": True,
+            "points": 10,
+            "company_name": company_name,
+            "matched_name": (
+                local_match.get("company_name")
+                if local_match and local_score >= 0.80
+                else None
+            ),
+            "official_domain": (
+                evidence["official_domain"]
+            ),
+            "local_database_match": (
+                local_match is not None
+                and local_score >= 0.80
+            ),
+            "match_score": web_score,
+            "search_source": search_source,
+            "search_results": results[:5],
+            "reason": (
+                f"Some public-web evidence was found "
+                f"for '{company_name}', but it is not "
+                f"strong enough for full points."
+            ),
         }
 
     return {
         "passed": False,
         "points": 0,
         "company_name": company_name,
-        "matched_name": best_match.get("name") if best_match else None,
-        "match_score": round(best_score, 3),
-        "reason": f"No sufficiently close company-name match was found for '{company_name}'."
+        "matched_name": (
+            local_match.get("company_name")
+            if local_match and local_score >= 0.80
+            else None
+        ),
+        "official_domain": (
+            local_match.get("official_domain")
+            if local_match and local_score >= 0.80
+            else None
+        ),
+        "local_database_match": (
+            local_match is not None
+            and local_score >= 0.80
+        ),
+        "match_score": web_score,
+        "search_source": search_source,
+        "search_results": results[:5],
+        "reason": (
+            f"Insufficient public-web evidence was "
+            f"found for '{company_name}'."
+        ),
     }
-
-def _not_built(name):
-    return {
-        "passed": None,
-        "points": 0,
-        "reason": f"{name} is not implemented yet."
-    }
-
-def check_2_recruiter_real(offer_text: str) -> dict:
-    return _not_built("Recruiter verification")
-
-def check_3_salary_viability(offer_text: str) -> dict:
-    return _not_built("Salary and opening viability")
-
-def check_4_email_verification(offer_text: str) -> dict:
-    return _not_built("Email verification")
-
-def check_5_scam_database(offer_text: str) -> dict:
-    return _not_built("Scam database")
-
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) != 2:
-        print("Usage: python cheak_external_api.py <input_file>")
-        raise SystemExit(1)
-    try:
-        with open(sys.argv[1], "r", encoding="utf-8") as f:
-            offer_text = f.read()
-    except OSError as exc:
-        print(f"Could not read input file: {exc}")
-        raise SystemExit(1)
-
-    result = check_1_company_exists(offer_text)
-    print(f"Company: {result.get('company_name')}")
-    print(f"Passed: {result.get('passed')}")
-    print(f"Points: {result.get('points', 0)}/{POINTS_PER_CHECK}")
-    print(f"Reason: {result.get('reason')}")

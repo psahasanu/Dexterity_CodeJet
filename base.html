@@ -1,369 +1,533 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dexterity - Job Offer Verification Engine</title>
+
+  <title>DEXTERITY - Offer Verification Engine</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
-    .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0f19;
+      color: #f3f4f6;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #263244;
+      border-radius: 16px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
   </style>
 </head>
-<body class="min-h-screen pb-12">
 
-  <!-- Navbar -->
-  <nav class="border-b border-gray-800 bg-gray-900/50 sticky top-0 z-40 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-500/40 rounded-xl flex items-center justify-center text-emerald-400 font-bold text-xl">⚡</div>
-        <div>
-          <h1 class="font-extrabold text-xl tracking-wide text-white">DEXTERITY</h1>
-          <p class="text-[10px] text-gray-400 uppercase tracking-wider">Python Script Backend Integrator</p>
-        </div>
+<body class="min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="border-b border-gray-800 bg-gray-900 px-6 py-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+
+      <div>
+        <h1 class="text-2xl font-bold text-white">
+          ⚡ DEXTERITY
+        </h1>
+
+        <p class="text-xs text-gray-400">
+          5-Category Offer Verification Engine
+        </p>
       </div>
-      <div class="flex items-center gap-2 text-xs text-gray-400 bg-gray-900 border border-gray-800 px-3 py-1.5 rounded-xl">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>Connected to Python Backend (<code class="text-emerald-400">http://localhost:8000</code>)</span>
+
+      <div class="flex items-center gap-2 text-sm">
+        <span id="statusDot"
+              class="w-3 h-3 rounded-full bg-gray-500"></span>
+
+        <span id="statusText" class="text-gray-400">
+          Checking backend...
+        </span>
       </div>
+
     </div>
   </nav>
 
-  <!-- Main Container -->
-  <main class="max-w-7xl mx-auto px-6 mt-8 space-y-8">
 
-    <!-- Input Methods Box -->
-    <div class="glass-card p-6 rounded-2xl border border-gray-800 shadow-lg">
-      <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-        <i class="fa-solid fa-file-import text-emerald-400"></i> Offer Text Input
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-6 py-8 space-y-6">
+
+    <!-- INPUT -->
+    <section class="card p-6">
+
+      <h2 class="text-xl font-bold mb-4">
+        Offer Content
       </h2>
 
-      <!-- Tab Buttons -->
-      <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-800 pb-4">
-        <button onclick="switchTab('paste')" id="tab-paste" class="tab-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-          <i class="fa-solid fa-paste"></i> 1. Paste Text
+      <textarea
+        id="rawText"
+        rows="10"
+        class="w-full bg-gray-950 border border-gray-700 rounded-xl p-4 text-white outline-none focus:border-emerald-500"
+        placeholder="Paste the offer letter here..."
+      ></textarea>
+
+      <div class="flex flex-wrap gap-3 mt-4">
+
+        <button
+          onclick="verifyOffer()"
+          class="bg-emerald-600 hover:bg-emerald-500 px-6 py-3 rounded-xl font-bold">
+          Verify Offer
         </button>
-        <button onclick="switchTab('txt')" id="tab-txt" class="tab-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-          <i class="fa-solid fa-file-lines"></i> 2. .txt File
+
+        <button
+          onclick="clearOffer()"
+          class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-xl font-bold">
+          Clear
         </button>
-        <button onclick="switchTab('pdf')" id="tab-pdf" class="tab-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-          <i class="fa-solid fa-file-pdf"></i> 3. .pdf File
-        </button>
-        <button onclick="switchTab('url')" id="tab-url" class="tab-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-          <i class="fa-solid fa-globe"></i> 4. Web URL
-        </button>
-        <button onclick="switchTab('gmail')" id="tab-gmail" class="tab-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
-          <i class="fa-solid fa-envelope"></i> 5. Gmail IMAP
-        </button>
+
       </div>
 
-      <!-- Tab Forms -->
-      <div id="formContainer" class="space-y-4">
-        <div id="content-paste" class="tab-content">
-          <textarea id="rawText" rows="3" placeholder="Paste your offer letter text here..." class="w-full bg-gray-900 border border-gray-700 text-xs text-white p-3 rounded-xl focus:outline-none focus:border-emerald-500"></textarea>
-          <button onclick="handlePasteSubmit()" class="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs">Load Text into Engine</button>
-        </div>
+    </section>
 
-        <div id="content-txt" class="tab-content hidden">
-          <input type="file" id="txtFileInput" accept=".txt" class="block w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white">
-          <button onclick="handleTxtUpload()" class="mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs">Send .txt to Python API</button>
-        </div>
 
-        <div id="content-pdf" class="tab-content hidden">
-          <input type="file" id="pdfFileInput" accept=".pdf" class="block w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-emerald-600 file:text-white">
-          <button onclick="handlePdfUpload()" class="mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs">Send .pdf to Python API</button>
-        </div>
+    <!-- FILE INPUT -->
+    <section class="card p-6">
 
-        <div id="content-url" class="tab-content hidden">
-          <input type="url" id="urlInput" placeholder="https://..." class="w-full bg-gray-900 border border-gray-700 text-xs text-white p-3 rounded-xl focus:outline-none focus:border-emerald-500">
-          <button onclick="handleUrlFetch()" class="mt-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs">Fetch via Python Scraping API</button>
-        </div>
+      <h2 class="text-lg font-bold mb-4">
+        Upload TXT / PDF
+      </h2>
 
-        <div id="content-gmail" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="email" id="gmailAddress" placeholder="Your Gmail Address" class="bg-gray-900 border border-gray-700 text-xs text-white p-3 rounded-xl">
-          <input type="password" id="gmailAppPassword" placeholder="Gmail App Password" class="bg-gray-900 border border-gray-700 text-xs text-white p-3 rounded-xl">
-          <div class="md:col-span-2">
-            <button onclick="handleGmailFetch()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-6 rounded-xl text-xs">Fetch Email via Python IMAP</button>
-          </div>
-        </div>
-      </div>
+      <input
+        id="fileInput"
+        type="file"
+        accept=".txt,.pdf"
+        class="block w-full text-sm text-gray-300"
+      >
 
-      <!-- Text Preview & Execution Bar -->
-      <div class="mt-6 pt-4 border-t border-gray-800">
-        <div class="flex justify-between items-center mb-2">
-          <label class="text-xs font-bold text-gray-400 uppercase">Loaded Offer Content (Passed to Python Function):</label>
-          <button onclick="runPythonCheck1()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold px-6 py-2 rounded-xl text-xs transition shadow-lg flex items-center gap-2">
-            <i class="fa-solid fa-play"></i> Run `check_1_company_exists(offer_text)`
-          </button>
-        </div>
-        <pre id="offerPreview" class="bg-gray-950 p-4 rounded-xl text-emerald-400 text-xs font-mono border border-gray-800 whitespace-pre-wrap max-h-28 overflow-y-auto">No text loaded yet. Paste text or upload a file above.</pre>
-      </div>
-    </div>
+      <button
+        onclick="readFile()"
+        class="mt-4 bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-xl font-semibold">
+        Load File
+      </button>
 
-    <!-- Results Panel -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      
-      <!-- Score Gauge Chart -->
-      <div class="glass-card p-6 rounded-2xl border border-gray-800 flex flex-col items-center justify-center text-center">
-        <h3 class="text-xs font-bold uppercase text-gray-400 mb-4 tracking-wider">Python Script Score Output</h3>
-        
-        <div class="relative w-44 h-44 flex items-center justify-center">
-          <canvas id="safetyGauge"></canvas>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span id="finalScore" class="text-3xl font-extrabold text-gray-500">0 / 100</span>
-            <span id="scoreStatus" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-1">AWAITING EXECUTION</span>
-          </div>
-        </div>
-        <p class="text-xs text-gray-400 mt-4">Displays exact dictionary keys returned by your Python function.</p>
-      </div>
+    </section>
 
-      <!-- Detailed Card showing Python Dict Outputs -->
-      <div class="lg:col-span-2 space-y-4">
-        
-        <div id="check1DetailCard" class="glass-card p-6 rounded-2xl border border-gray-800 space-y-4">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="flex items-center gap-2">
-                <h3 class="font-bold text-white text-sm">CHECK 1: Company Existence (`check_1_company_exists`)</h3>
-                <span id="c1PointsBadge" class="text-[10px] bg-gray-800 text-gray-400 font-bold px-2 py-0.5 rounded font-mono">0 / 20 PTS</span>
-              </div>
-              <p id="c1Reason" class="text-xs text-gray-400 mt-1 font-medium">Run check to view Python output.</p>
-            </div>
-            <span id="c1PassedBadge" class="bg-gray-800 text-gray-400 text-xs px-3 py-1 rounded-full font-bold uppercase">IDLE</span>
-          </div>
 
-          <!-- Python Return Dictionary Values -->
-          <div class="bg-gray-950/80 p-4 rounded-xl border border-gray-800 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs font-mono">
-            <div>
-              <span class="text-gray-500 block uppercase text-[10px]">`company_name`:</span>
-              <span id="pyCompanyName" class="text-white font-semibold">-</span>
-            </div>
-            <div>
-              <span class="text-gray-500 block uppercase text-[10px]">`matched_name`:</span>
-              <span id="pyMatchedName" class="text-emerald-400 font-semibold">-</span>
-            </div>
-            <div>
-              <span class="text-gray-500 block uppercase text-[10px]">`match_score`:</span>
-              <span id="pyMatchScore" class="text-emerald-400 font-semibold">-</span>
-            </div>
-            <div>
-              <span class="text-gray-500 block uppercase text-[10px]">`jurisdiction`:</span>
-              <span id="pyJurisdiction" class="text-gray-300">-</span>
-            </div>
-            <div>
-              <span class="text-gray-500 block uppercase text-[10px]">`company_number`:</span>
-              <span id="pyCompanyNumber" class="text-gray-300">-</span>
-            </div>
-            <div>
-              <span class="text-gray-500 block uppercase text-[10px]">`status`:</span>
-              <span id="pyStatus" class="text-gray-300">-</span>
-            </div>
-          </div>
+    <!-- RESULTS -->
+    <section id="resultsSection"
+             class="card p-6 hidden">
 
-          <!-- Registry Link -->
-          <div id="pyRegistryRow" class="pt-1 flex items-center justify-between text-xs hidden">
-            <span class="text-gray-400">`registry_url`:</span>
-            <a id="pyRegistryUrl" href="#" target="_blank" class="text-emerald-400 hover:text-emerald-300 underline font-mono flex items-center gap-1">
-              <span>View OpenCorporates Record</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-            </a>
-          </div>
+      <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-xl font-bold">
+          Verification Result
+        </h2>
+
+        <div id="totalScore"
+             class="text-2xl font-bold text-emerald-400">
         </div>
 
       </div>
 
-    </div>
+      <div id="checks"
+           class="space-y-4">
+      </div>
+
+    </section>
+
   </main>
 
-  <script>
-    const API_BASE = "http://127.0.0.1:8000";
-    let loadedOfferText = "";
-    let gaugeChart;
 
-    window.addEventListener("load", async () => {
-      const ctx = document.getElementById("safetyGauge").getContext("2d");
-      gaugeChart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-          datasets: [{
-            data: [0, 100],
-            backgroundColor: ["#374151", "#1f2937"],
-            borderWidth: 0
-          }]
+<script>
+
+const API_BASE = window.location.origin;
+
+
+/* =========================================================
+   BACKEND STATUS
+========================================================= */
+
+async function checkBackend() {
+
+  const dot = document.getElementById("statusDot");
+  const text = document.getElementById("statusText");
+
+  try {
+
+    const response = await fetch(`${API_BASE}/health`);
+
+    if (!response.ok) {
+      throw new Error("Backend unavailable");
+    }
+
+    dot.className =
+      "w-3 h-3 rounded-full bg-emerald-500";
+
+    text.textContent =
+      "Python Backend Connected";
+
+    text.className =
+      "text-emerald-400";
+
+  } catch (error) {
+
+    dot.className =
+      "w-3 h-3 rounded-full bg-red-500";
+
+    text.textContent =
+      "Backend Offline";
+
+    text.className =
+      "text-red-400";
+  }
+}
+
+
+/* =========================================================
+   VERIFY
+========================================================= */
+
+async function verifyOffer() {
+
+  const text = document
+    .getElementById("rawText")
+    .value
+    .trim();
+
+  if (!text) {
+
+    alert("Paste an offer letter first.");
+
+    return;
+  }
+
+
+  const button =
+    document.querySelector("button[onclick='verifyOffer()']");
+
+  button.disabled = true;
+  button.textContent = "Checking...";
+
+
+  try {
+
+    const response = await fetch(
+      `${API_BASE}/verify`,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
         },
-        options: {
-          cutout: "80%",
-          responsive: true,
-          plugins: { tooltip: { enabled: false } }
-        }
-      });
-      checkBackend();
-    });
 
-    async function checkBackend() {
-      try {
-        const res = await fetch(`${API_BASE}/health`);
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        const badge = document.querySelector("nav .rounded-xl .w-2");
-        const text = document.querySelector("nav .rounded-xl span:last-child");
-        if (badge) badge.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-        if (text) text.innerHTML = `Connected to Python Backend (<code class="text-emerald-400">${API_BASE}</code>)`;
-      } catch {
-        const text = document.querySelector("nav .rounded-xl span:last-child");
-        if (text) text.textContent = "Python Backend OFFLINE - run main_updated.py";
+        body: JSON.stringify({
+          text: text
+        })
       }
-    }
+    );
 
-    function switchTab(tab) {
-      document.querySelectorAll(".tab-btn").forEach(btn =>
-        btn.className = "tab-btn bg-gray-800 hover:bg-gray-700 text-gray-300 px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2"
+
+    const data = await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.detail || "Verification failed."
       );
-      document.getElementById(`tab-${tab}`).className =
-        "tab-btn bg-emerald-600 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2";
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
-      document.getElementById(`content-${tab}`).classList.remove("hidden");
     }
 
-    function updatePreview(text) {
-      loadedOfferText = text || "";
-      document.getElementById("offerPreview").innerText =
-        loadedOfferText || "No text loaded.";
+
+    displayResults(data);
+
+
+  } catch (error) {
+
+    alert("Error: " + error.message);
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Verify Offer";
+
+  }
+}
+
+
+/* =========================================================
+   DISPLAY RESULTS
+========================================================= */
+
+function displayResults(data) {
+
+  const section =
+    document.getElementById("resultsSection");
+
+  const checks =
+    document.getElementById("checks");
+
+  const total =
+    document.getElementById("totalScore");
+
+
+  section.classList.remove("hidden");
+
+  checks.innerHTML = "";
+
+
+  const totalScore =
+    data.total_score ??
+    data.total_points ??
+    data.score ??
+    0;
+
+
+  total.textContent =
+    `${totalScore}/100`;
+
+
+  const checkNames = [
+    ["check_1", "Company Verification"],
+    ["check_2", "Recruiter Verification"],
+    ["check_3", "Salary Viability"],
+    ["check_4", "Email Verification"],
+    ["check_5", "Scam Detection"]
+  ];
+
+
+  checkNames.forEach(([key, title]) => {
+
+    const result = data[key];
+
+    if (!result) {
+      return;
     }
 
-    function handlePasteSubmit() {
-      const txt = document.getElementById("rawText").value.trim();
-      if (!txt) return alert("Please enter or paste text into the box.");
-      updatePreview(txt);
+
+    const points =
+      Number(result.points || 0);
+
+
+    const passed =
+      result.passed;
+
+
+    let statusText = "Not passed";
+    let statusClass = "text-red-400";
+
+    if (passed === true) {
+
+      statusText = "Passed";
+      statusClass = "text-emerald-400";
+
+    } else if (passed === null) {
+
+      statusText = "Needs review";
+      statusClass = "text-yellow-400";
     }
 
-    async function handleTxtUpload() {
-      await handleFileUpload("txtFileInput");
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "bg-gray-950 border border-gray-800 rounded-xl p-5";
+
+
+    card.innerHTML = `
+
+      <div class="flex justify-between items-start gap-4">
+
+        <div>
+
+          <h3 class="font-bold text-lg">
+            ${title}
+          </h3>
+
+          <p class="${statusClass} text-sm mt-1">
+            ${statusText}
+          </p>
+
+        </div>
+
+        <div class="font-bold text-lg">
+          ${points}/20
+        </div>
+
+      </div>
+
+      <p class="text-gray-400 text-sm mt-4">
+        ${escapeHtml(result.reason || "No explanation provided.")}
+      </p>
+
+    `;
+
+
+    checks.appendChild(card);
+
+  });
+
+
+  /* COMPANY DETAILS */
+
+  if (data.check_1) {
+
+    const company =
+      data.check_1.company_name;
+
+    if (company) {
+
+      const companyBox =
+        document.createElement("div");
+
+      companyBox.className =
+        "mt-4 bg-gray-900 border border-gray-700 rounded-xl p-4";
+
+
+      companyBox.innerHTML = `
+
+        <p class="text-sm text-gray-400">
+          Detected company
+        </p>
+
+        <p class="font-bold text-white mt-1">
+          ${escapeHtml(company)}
+        </p>
+
+      `;
+
+
+      checks.prepend(companyBox);
     }
+  }
+}
 
-    async function handlePdfUpload() {
-      await handleFileUpload("pdfFileInput");
-    }
 
-    async function handleFileUpload(inputId) {
-      const file = document.getElementById(inputId).files[0];
-      if (!file) return alert("Please select a file.");
+/* =========================================================
+   FILE READER
+========================================================= */
 
-      const formData = new FormData();
-      formData.append("file", file);
+async function readFile() {
 
-      try {
-        const res = await fetch(`${API_BASE}/read-${file.name.toLowerCase().endsWith(".pdf") ? "pdf" : "txt"}`, {
+  const input =
+    document.getElementById("fileInput");
+
+  const file = input.files[0];
+
+  if (!file) {
+
+    alert("Choose a TXT or PDF file first.");
+
+    return;
+  }
+
+
+  const formData =
+    new FormData();
+
+  formData.append("file", file);
+
+
+  let endpoint;
+
+
+  if (
+    file.name.toLowerCase().endsWith(".pdf")
+  ) {
+
+    endpoint = "/read-pdf";
+
+  } else {
+
+    endpoint = "/read-txt";
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        `${API_BASE}${endpoint}`,
+        {
           method: "POST",
           body: formData
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || "File could not be read.");
-        updatePreview(data.text);
-      } catch (err) {
-        alert("Could not connect to Python backend.\n\n" + err.message +
-              "\n\nMake sure main_updated.py is running.");
-      }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.detail || "Could not read file."
+      );
     }
 
-    async function handleUrlFetch() {
-      const url = document.getElementById("urlInput").value.trim();
-      if (!url) return alert("Please enter a URL.");
 
-      try {
-        const res = await fetch(`${API_BASE}/read-url?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || "URL could not be read.");
-        updatePreview(data.text);
-      } catch (err) {
-        alert("Could not connect to Python backend.\n\n" + err.message);
-      }
-    }
+    document.getElementById("rawText").value =
+      data.text || "";
 
-    async function handleGmailFetch() {
-      const email = document.getElementById("gmailAddress").value.trim();
-      const app_password = document.getElementById("gmailAppPassword").value.trim();
-      if (!email || !app_password) return alert("Please enter email and app password.");
 
-      try {
-        const res = await fetch(`${API_BASE}/read-email`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email_address: email, app_password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || "Email could not be read.");
-        updatePreview(data.text);
-      } catch (err) {
-        alert("Could not connect to Python backend.\n\n" + err.message);
-      }
-    }
+  } catch (error) {
 
-    async function runPythonCheck1() {
-      if (!loadedOfferText) return alert("Load or paste offer letter text first.");
+    alert("Error: " + error.message);
+  }
+}
 
-      try {
-        const res = await fetch(`${API_BASE}/run-check-1`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ offer_text: loadedOfferText })
-        });
-        const result = await res.json();
-        if (!res.ok) throw new Error(result.detail || "Check failed.");
-        renderPythonDictResults(result);
-      } catch (err) {
-        alert("Could not communicate with Python backend.\n\n" + err.message);
-      }
-    }
 
-    function renderPythonDictResults(res) {
-      document.getElementById("c1Reason").innerText = res.reason || "N/A";
-      document.getElementById("pyCompanyName").innerText = res.company_name || "None Found";
-      document.getElementById("pyMatchedName").innerText = res.matched_name || "None";
-      document.getElementById("pyMatchScore").innerText =
-        res.match_score !== undefined ? res.match_score : "-";
-      document.getElementById("pyJurisdiction").innerText = res.jurisdiction || "N/A";
-      document.getElementById("pyCompanyNumber").innerText = res.company_number || "N/A";
-      document.getElementById("pyStatus").innerText = res.status || "N/A";
+/* =========================================================
+   CLEAR
+========================================================= */
 
-      const regRow = document.getElementById("pyRegistryRow");
-      const regAnchor = document.getElementById("pyRegistryUrl");
+function clearOffer() {
 
-      if (res.registry_url) {
-        regAnchor.href = res.registry_url;
-        regRow.classList.remove("hidden");
-      } else {
-        regRow.classList.add("hidden");
-      }
+  document.getElementById("rawText").value = "";
 
-      const badge = document.getElementById("c1PassedBadge");
-      const pts = document.getElementById("c1PointsBadge");
+  document
+    .getElementById("resultsSection")
+    .classList.add("hidden");
 
-      if (res.passed === true) {
-        badge.className = "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1 rounded-full font-bold uppercase";
-        badge.innerText = "PASSED";
-        pts.innerText = `${res.points || 0} / 20 PTS`;
-        document.getElementById("finalScore").innerText = "20 / 100";
-        document.getElementById("scoreStatus").innerText = "PASSED";
-        gaugeChart.data.datasets[0].data = [20, 80];
-      } else if (res.passed === null) {
-        badge.innerText = "API ERROR";
-        pts.innerText = "0 / 20 PTS";
-        document.getElementById("finalScore").innerText = "0 / 100";
-        document.getElementById("scoreStatus").innerText = "API ERROR";
-        gaugeChart.data.datasets[0].data = [0, 100];
-      } else {
-        badge.innerText = "FAILED";
-        pts.innerText = "0 / 20 PTS";
-        document.getElementById("finalScore").innerText = "0 / 100";
-        document.getElementById("scoreStatus").innerText = "FAILED";
-        gaugeChart.data.datasets[0].data = [0, 100];
-      }
+  document
+    .getElementById("checks")
+    .innerHTML = "";
 
-      gaugeChart.update();
-    }
-  </script>
+  document
+    .getElementById("totalScore")
+    .textContent = "";
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+  return String(value)
+
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+/* =========================================================
+   START
+========================================================= */
+
+checkBackend();
+
+</script>
+
 </body>
 </html>
+```
+
