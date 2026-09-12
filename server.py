@@ -132,7 +132,7 @@ def read_url():
 
 @app.route("/read-email", methods=["POST"])
 def read_email():
-    data = request.get_json() or {}
+    data = request.get_json(silent=True) or {}
 
     email_address = data.get("email_address", "")
     app_password = data.get("app_password", "")
@@ -150,17 +150,56 @@ def read_email():
 
 @app.route("/verify", methods=["POST"])
 def verify():
-    data = request.get_json() or {}
-    offer_text = data.get("text", "")
+    try:
+        data = request.get_json(silent=True) or {}
 
-    if not offer_text.strip():
-        return error_response(
-            "No offer text provided."
-        )
+        offer_text = data.get("text", "")
 
-    result = run_all_checks(offer_text)
+        if not isinstance(offer_text, str):
+            return error_response(
+                "Offer text must be a string."
+            )
 
-    return jsonify(result)
+        if not offer_text.strip():
+            return error_response(
+                "No offer text provided."
+            )
+
+        print()
+        print("======================================")
+        print("       OFFER VERIFICATION")
+        print("======================================")
+        print("Running verification checks...")
+        print()
+
+        result = run_all_checks(offer_text)
+
+        if not isinstance(result, dict):
+            return error_response(
+                "Verification returned an invalid result.",
+                500
+            )
+
+        print("Verification completed.")
+        print("Score:", result.get("score"))
+        print("======================================")
+        print()
+
+        return jsonify(result), 200
+
+    except Exception as exc:
+
+        print()
+        print("======================================")
+        print("          VERIFY ERROR")
+        print("======================================")
+        print(repr(exc))
+        print("======================================")
+        print()
+
+        return jsonify({
+            "detail": f"Verification backend error: {str(exc)}"
+        }), 500
 
 
 # ==========================================================
