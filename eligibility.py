@@ -1,69 +1,42 @@
 import re
 from docx import Document
-
 from jobs import JOB_DATABASE
 
 
-# ============================================================
-# RESUME TEXT EXTRACTION
-# ============================================================
-
 def extract_resume_text(file_path):
-    """
-    Extract text from a .docx resume.
-    """
-
     try:
         document = Document(file_path)
-
-        paragraphs = []
+        text = []
 
         for paragraph in document.paragraphs:
-            text = paragraph.text.strip()
+            if paragraph.text.strip():
+                text.append(paragraph.text.strip())
 
-            if text:
-                paragraphs.append(text)
-
-        # Also read tables, because many resumes store
-        # education/skills inside tables.
         for table in document.tables:
             for row in table.rows:
                 for cell in row.cells:
-                    text = cell.text.strip()
+                    if cell.text.strip():
+                        text.append(cell.text.strip())
 
-                    if text:
-                        paragraphs.append(text)
-
-        return "\n".join(paragraphs)
+        return "\n".join(text)
 
     except Exception as exc:
-        raise RuntimeError(
-            f"Could not read resume: {exc}"
-        )
+        raise RuntimeError(f"Could not read resume: {exc}")
 
-
-# ============================================================
-# EXPERIENCE PARSING
-# ============================================================
 
 def extract_years_of_experience(resume_text):
-    """
-    Try to determine the candidate's total professional experience.
-    """
-
     text = resume_text.lower()
 
     patterns = [
-        r"(\d+(?:\.\d+)?)\s*\+?\s*years?\s+(?:of\s+)?experience",
+        r"(\d+(?:\.\d+)?)\s*\+?\s*years?\s*(?:of\s*)?experience",
         r"experience\s*[:\-]?\s*(\d+(?:\.\d+)?)\s*\+?\s*years?",
+        r"(\d+(?:\.\d+)?)\s*\+?\s*years?\s*(?:in|working|worked)"
     ]
 
     values = []
 
     for pattern in patterns:
-        matches = re.findall(pattern, text)
-
-        for match in matches:
+        for match in re.findall(pattern, text):
             try:
                 values.append(float(match))
             except ValueError:
@@ -72,87 +45,54 @@ def extract_years_of_experience(resume_text):
     if values:
         return max(values)
 
-    # Student/fresher fallback
-    fresher_words = [
+    if any(x in text for x in [
         "fresher",
         "fresh graduate",
         "recent graduate",
         "student",
         "undergraduate",
-        "entry level",
-    ]
-
-    if any(word in text for word in fresher_words):
+        "entry level"
+    ]):
         return 0.0
 
     return 0.0
 
 
-# ============================================================
-# JOB EXPERIENCE REQUIREMENT
-# ============================================================
-
 def parse_experience_requirement(experience_string):
-    """
-    Convert:
-        0-1 years  -> 0
-        1-3 years  -> 1
-        5-8 years  -> 5
-        8+ years   -> 8
-
-    We use the LOWER bound as the minimum required experience.
-    """
-
     text = experience_string.lower()
 
-    plus_match = re.search(
-        r"(\d+(?:\.\d+)?)\s*\+",
-        text
-    )
+    match = re.search(r"(\d+(?:\.\d+)?)\s*\+", text)
+    if match:
+        return float(match.group(1))
 
-    if plus_match:
-        return float(plus_match.group(1))
+    match = re.search(r"(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)", text)
+    if match:
+        return float(match.group(1))
 
-    range_match = re.search(
-        r"(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)",
-        text
-    )
-
-    if range_match:
-        return float(range_match.group(1))
-
-    single_match = re.search(
-        r"(\d+(?:\.\d+)?)",
-        text
-    )
-
-    if single_match:
-        return float(single_match.group(1))
+    match = re.search(r"(\d+(?:\.\d+)?)", text)
+    if match:
+        return float(match.group(1))
 
     return 0.0
 
 
-# ============================================================
-# SKILL NORMALIZATION
-# ============================================================
-
 def normalize_text(text):
-    """
-    Normalize text so that skill matching is more reliable.
-    """
-
     text = text.lower()
 
     replacements = {
         "c plus plus": "c++",
         "cplusplus": "c++",
         "c sharp": "c#",
+        "javascript": "javascript",
         "js": "javascript",
+        "typescript": "typescript",
         "ts": "typescript",
         "postgres": "postgresql",
         "power bi": "powerbi",
         "machine-learning": "machine learning",
         "deep-learning": "deep learning",
+        "restful api": "rest api",
+        "restful apis": "rest apis"
     }
 
     for old, new in replacements.items():
@@ -162,60 +102,65 @@ def normalize_text(text):
 
 
 def skill_present(skill, resume_text):
-    """
-    Check whether a required skill appears in the resume.
-    """
+    skill = normalize_text(skill)
+    resume = normalize_text(resume_text)
 
-    skill_normalized = normalize_text(skill)
-    resume_normalized = normalize_text(resume_text)
-
-    # Exact phrase match first
-    if skill_normalized in resume_normalized:
+    if skill in resume:
         return True
 
-    # Word-based fallback
-    words = skill_normalized.split()
+    aliases = {
+        "c/c++": ["c++", "c", "cpp"],
+        "python/java": ["python", "java"],
+        "aws/gcp": ["aws", "gcp"],
+        "aws/azure": ["aws", "azure"],
+        "tableau/powerbi": ["tableau", "powerbi"],
+        "x-ray/mri certification": ["x-ray", "mri", "radiology"],
+        "pharm.d or b.pharm": ["pharm.d", "b.pharm"],
+        "mbbs degree": ["mbbs"],
+        "master's/ph.d. in field": ["master", "ph.d", "phd"]
+    }
+
+    for alias in aliases:
+        if skill == alias:
+            return any(x in resume for x in aliases[alias])
+
+    words = [w for w in skill.split() if len(w) > 2]
 
     if len(words) > 1:
-        return all(
-            word in resume_normalized
-            for word in words
-        )
+        return all(word in resume for word in words)
 
     return False
 
 
-# ============================================================
-# FIND JOB
-# ============================================================
+def get_categories():
+    return list(JOB_DATABASE.keys())
+
+
+def get_jobs(category):
+    if category not in JOB_DATABASE:
+        return []
+
+    return [job["title"] for job in JOB_DATABASE[category]]
+
 
 def get_job(category, job_title):
-    """
-    Find a job from JOB_DATABASE.
-    """
+    if category not in JOB_DATABASE:
+        return None
 
-    category_jobs = JOB_DATABASE.get(category, [])
-
-    for job in category_jobs:
-
+    for job in JOB_DATABASE[category]:
         if job["title"].lower() == job_title.lower():
             return job
 
     return None
 
 
-# ============================================================
-# ELIGIBILITY ANALYSIS
-# ============================================================
-
 def check_eligibility(category, job_title, resume_path):
-
     job = get_job(category, job_title)
 
     if not job:
         return {
             "success": False,
-            "error": "Job not found in database."
+            "error": "Job not found."
         }
 
     resume_text = extract_resume_text(resume_path)
@@ -223,33 +168,21 @@ def check_eligibility(category, job_title, resume_path):
     if not resume_text.strip():
         return {
             "success": False,
-            "error": "The resume appears to be empty."
+            "error": "Resume is empty."
         }
-
-    # --------------------------------------------------------
-    # SKILLS
-    # --------------------------------------------------------
 
     required_skills = job.get("requirements", [])
 
-    matched_skills = []
-    missing_skills = []
+    matched_requirements = []
+    missing_requirements = []
 
-    for skill in required_skills:
-
-        if skill_present(skill, resume_text):
-            matched_skills.append(skill)
-
+    for requirement in required_skills:
+        if skill_present(requirement, resume_text):
+            matched_requirements.append(requirement)
         else:
-            missing_skills.append(skill)
+            missing_requirements.append(requirement)
 
-    # --------------------------------------------------------
-    # EXPERIENCE
-    # --------------------------------------------------------
-
-    candidate_experience = extract_years_of_experience(
-        resume_text
-    )
+    candidate_experience = extract_years_of_experience(resume_text)
 
     required_experience = parse_experience_requirement(
         job.get("experience", "0 years")
@@ -260,178 +193,49 @@ def check_eligibility(category, job_title, resume_path):
         required_experience - candidate_experience
     )
 
-    experience_met = (
-        candidate_experience >= required_experience
-    )
-
-    # --------------------------------------------------------
-    # SCORE
-    # --------------------------------------------------------
+    experience_met = candidate_experience >= required_experience
 
     total_requirements = len(required_skills)
 
-    if total_requirements > 0:
-        skill_score = (
-            len(matched_skills) /
-            total_requirements
-        )
+    if total_requirements:
+        skill_score = len(matched_requirements) / total_requirements
     else:
         skill_score = 1.0
 
-    # Skills = 70%
-    # Experience = 30%
-
-    experience_score = (
-        1.0 if experience_met else
-        min(
-            candidate_experience /
-            required_experience,
+    if required_experience > 0:
+        experience_score = min(
+            candidate_experience / required_experience,
             1.0
-        ) if required_experience > 0 else 1.0
-    )
+        )
+    else:
+        experience_score = 1.0
 
-    final_score = (
-        skill_score * 70
-        +
+    score = (
+        skill_score * 70 +
         experience_score * 30
     )
 
-    # --------------------------------------------------------
-    # STATUS
-    # --------------------------------------------------------
-
-    if (
-        final_score >= 80
-        and not missing_skills
-        and experience_met
-    ):
+    if not missing_requirements and experience_met:
         status = "Eligible"
-
-    elif final_score >= 40:
+    elif score >= 40:
         status = "Partially Eligible"
-
     else:
         status = "Not Eligible"
 
-    # --------------------------------------------------------
-    # RESULT
-    # --------------------------------------------------------
-
     return {
         "success": True,
-
-        "status": status,
-
-        "score": round(final_score, 1),
-
-        "job": job["title"],
-
         "category": category,
-
-        "matched_requirements": matched_skills,
-
-        "missing_requirements": missing_skills,
-
-        "candidate_experience": candidate_experience,
-
-        "required_experience": required_experience,
-
-        "experience_gap": experience_gap,
-
-        "experience_requirement": job["experience"],
-
-        "total_requirements": total_requirements,
-
-        "matched_count": len(matched_skills),
-
-        "message": (
-            "Candidate meets the major requirements."
-            if status == "Eligible"
-            else
-            "Candidate meets some requirements but "
-            "needs additional qualifications."
-            if status == "Partially Eligible"
-            else
-            "Candidate currently does not meet enough "
-            "of the required qualifications."
-        )
+        "job": job["title"],
+        "status": status,
+        "score": round(score, 1),
+        "experience_required": job["experience"],
+        "required_experience_years": required_experience,
+        "candidate_experience_years": candidate_experience,
+        "experience_gap_years": experience_gap,
+        "matched_requirements": matched_requirements,
+        "missing_requirements": missing_requirements,
+        "remaining_requirements": missing_requirements,
+        "matched_count": len(matched_requirements),
+        "missing_count": len(missing_requirements),
+        "total_requirements": total_requirements
     }
-
-
-# ============================================================
-# TEST
-# ============================================================
-
-if __name__ == "__main__":
-
-    print("===== DEXTERITY JOB ELIGIBILITY ENGINE =====")
-
-    print("\nAvailable categories:")
-
-    for category in JOB_DATABASE:
-        print(" -", category)
-
-    category = input("\nEnter category: ").strip()
-
-    if category not in JOB_DATABASE:
-        print("Invalid category.")
-        raise SystemExit
-
-    print("\nAvailable jobs:")
-
-    for job in JOB_DATABASE[category]:
-        print(" -", job["title"])
-
-    job_title = input("\nEnter job title: ").strip()
-
-    resume_path = input(
-        "\nEnter path to .docx resume: "
-    ).strip()
-
-    result = check_eligibility(
-        category,
-        job_title,
-        resume_path
-    )
-
-    print("\n===== RESULT =====")
-
-    if not result["success"]:
-        print("ERROR:", result["error"])
-
-    else:
-        print("Job:", result["job"])
-        print("Status:", result["status"])
-        print("Score:", result["score"], "/ 100")
-
-        print(
-            "\nMatched requirements:"
-        )
-
-        for item in result["matched_requirements"]:
-            print("  ✓", item)
-
-        print(
-            "\nMissing requirements:"
-        )
-
-        for item in result["missing_requirements"]:
-            print("  ✗", item)
-
-        print(
-            "\nCandidate experience:",
-            result["candidate_experience"],
-            "years"
-        )
-
-        print(
-            "Required experience:",
-            result["experience_requirement"]
-        )
-
-        if result["experience_gap"] > 0:
-            print(
-                "Additional experience needed:",
-                result["experience_gap"],
-                "years"
-            )
