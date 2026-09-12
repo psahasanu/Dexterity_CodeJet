@@ -17,9 +17,19 @@ from eligibility import (
     check_eligibility,
 )
 
+from company_finder import (
+    get_universities,
+    get_branches,
+    get_placement,
+)
+
 
 app = Flask(__name__)
 
+
+# ==========================================================
+# CORS
+# ==========================================================
 
 @app.after_request
 def add_cors_headers(response):
@@ -33,6 +43,10 @@ def error_response(message, status=400):
     return jsonify({"detail": message}), status
 
 
+# ==========================================================
+# BASIC ROUTES
+# ==========================================================
+
 @app.route("/")
 def serve_ui():
     return send_from_directory(".", "base.html")
@@ -42,6 +56,10 @@ def serve_ui():
 def health():
     return jsonify({"status": "ok"})
 
+
+# ==========================================================
+# OFFER VERIFIER
+# ==========================================================
 
 @app.route("/read-txt", methods=["POST"])
 def read_txt():
@@ -145,6 +163,10 @@ def verify():
     return jsonify(result)
 
 
+# ==========================================================
+# RESUME / JOB ELIGIBILITY
+# ==========================================================
+
 @app.route("/job-categories", methods=["GET"])
 def job_categories():
     return jsonify({
@@ -214,14 +236,92 @@ def analyze_resume():
             os.remove(resume_path)
 
 
+# ==========================================================
+# UNIVERSITY PLACEMENT INTELLIGENCE
+# ==========================================================
+
+@app.route("/universities", methods=["GET"])
+def universities():
+    return jsonify({
+        "universities": get_universities()
+    })
+
+
+@app.route("/branches/<university>", methods=["GET"])
+def branches(university):
+    branch_list = get_branches(university)
+
+    if not branch_list:
+        return error_response(
+            "University not found.",
+            404
+        )
+
+    return jsonify({
+        "university": university,
+        "branches": branch_list
+    })
+
+
+@app.route("/placement", methods=["GET"])
+def placement():
+    university = request.args.get(
+        "university",
+        ""
+    ).strip()
+
+    branch = request.args.get(
+        "branch",
+        ""
+    ).strip()
+
+    year = request.args.get(
+        "year",
+        "2025"
+    ).strip()
+
+    if not university:
+        return error_response(
+            "University is required."
+        )
+
+    if not branch:
+        return error_response(
+            "Branch is required."
+        )
+
+    result = get_placement(
+        university,
+        branch,
+        year
+    )
+
+    if not result.get("success"):
+        return error_response(
+            result.get(
+                "message",
+                "Placement data unavailable."
+            ),
+            404
+        )
+
+    return jsonify(result)
+
+
+# ==========================================================
+# START SERVER
+# ==========================================================
+
 if __name__ == "__main__":
+
     print()
     print("======================================")
     print("       DEXTERITY BACKEND")
     print("======================================")
-    print("Backend:    http://127.0.0.1:8000")
-    print("Health:     http://127.0.0.1:8000/health")
-    print("Categories: http://127.0.0.1:8000/job-categories")
+    print("Backend:      http://127.0.0.1:8000")
+    print("Health:       http://127.0.0.1:8000/health")
+    print("Categories:   http://127.0.0.1:8000/job-categories")
+    print("Universities: http://127.0.0.1:8000/universities")
     print("======================================")
     print()
 
