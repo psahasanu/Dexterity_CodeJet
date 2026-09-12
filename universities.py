@@ -1848,5 +1848,930 @@ PLACEMENT_DATA = {
                 "average_package": 6.4
             }
         }
+    },
+    "IISc Bangalore": {
+        "CSE": {
+            "2025": {
+                "highest_package": 250.0,
+                "company": "Google",
+                "average_package": 45.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 110.0,
+                "company": "Intel",
+                "average_package": 28.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 55.0,
+                "company": "General Electric",
+                "average_package": 16.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 40.0,
+                "company": "Microsoft",
+                "average_package": 18.0
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 60.0,
+                "company": "Biocon",
+                "average_package": 15.0
+            }
+        }
+    },
+    "IIT (ISM) Dhanbad": {
+        "CSE": {
+            "2025": {
+                "highest_package": 150.0,
+                "company": "Amazon",
+                "average_package": 26.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 70.0,
+                "company": "Qualcomm",
+                "average_package": 17.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 32.0,
+                "company": "Tata Steel",
+                "average_package": 11.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 24.0,
+                "company": "Adobe",
+                "average_package": 11.5
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 28.0,
+                "company": "Dr. Reddy's",
+                "average_package": 9.5
+            }
+        }
+    },
+    "IIT Palakkad": {
+        "CSE": {
+            "2025": {
+                "highest_package": 120.0,
+                "company": "MathWorks",
+                "average_package": 21.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 55.0,
+                "company": "Texas Instruments",
+                "average_package": 15.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 25.0,
+                "company": "L&T",
+                "average_package": 9.5
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 18.0,
+                "company": "Infosys",
+                "average_package": 9.0
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 20.0,
+                "company": "Syngene",
+                "average_package": 8.5
+            }
+        }
+    },
+    "IIT Tirupati": {
+        "CSE": {
+            "2025": {
+                "highest_package": 125.0,
+                "company": "Amazon",
+                "average_package": 22.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 58.0,
+                "company": "Intel",
+                "average_package": 15.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 26.0,
+                "company": "Ashok Leyland",
+                "average_package": 10.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 19.0,
+                "company": "Wipro",
+                "average_package": 9.2
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 21.0,
+                "company": "Cipla",
+                "average_package": 8.8
+            }
+        }
+    },
+    "IIT Bhilai": {
+        "CSE": {
+            "2025": {
+                "highest_package": 110.0,
+                "company": "Goldman Sachs",
+                "average_package": 20.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 50.0,
+                "company": "Cisco",
+                "average_package": 14.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 24.0,
+                "company": "BHEL",
+                "average_package": 9.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 17.0,
+                "company": "TCS",
+                "average_package": 8.5
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 19.0,
+                "company": "Lupin",
+                "average_package": 8.0
+            }
+        }
+    },
+    "IIT Goa": {
+        "CSE": {
+            "2025": {
+                "highest_package": 115.0,
+                "company": "Microsoft",
+                "average_package": 20.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 52.0,
+                "company": "Qualcomm",
+                "average_package": 14.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 25.0,
+                "company": "Mahindra",
+                "average_package": 9.2
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 18.0,
+                "company": "Accenture",
+                "average_package": 8.8
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 20.0,
+                "company": "Sun Pharma",
+                "average_package": 8.2
+            }
+        }
+    },
+    "IIT Jammu": {
+        "CSE": {
+            "2025": {
+                "highest_package": 110.0,
+                "company": "Amazon",
+                "average_package": 19.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 48.0,
+                "company": "Analog Devices",
+                "average_package": 13.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 23.0,
+                "company": "Tata Motors",
+                "average_package": 8.8
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 16.0,
+                "company": "Infosys",
+                "average_package": 8.2
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 18.0,
+                "company": "Dr. Reddy's",
+                "average_package": 7.8
+            }
+        }
+    },
+    "IIT Dharwad": {
+        "CSE": {
+            "2025": {
+                "highest_package": 112.0,
+                "company": "Uber",
+                "average_package": 20.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 49.0,
+                "company": "AMD",
+                "average_package": 14.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 23.5,
+                "company": "Bosch",
+                "average_package": 9.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 16.5,
+                "company": "Wipro",
+                "average_package": 8.5
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 18.5,
+                "company": "Biocon",
+                "average_package": 8.0
+            }
+        }
+    },
+    "NIT Patna": {
+        "CSE": {
+            "2025": {
+                "highest_package": 95.0,
+                "company": "Amazon",
+                "average_package": 18.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 52.0,
+                "company": "Qualcomm",
+                "average_package": 13.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 24.0,
+                "company": "Tata Steel",
+                "average_package": 8.5
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 17.0,
+                "company": "Cognizant",
+                "average_package": 8.0
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 19.0,
+                "company": "Cipla",
+                "average_package": 7.5
+            }
+        }
+    },
+    "NIT Raipur": {
+        "CSE": {
+            "2025": {
+                "highest_package": 56.0,
+                "company": "Microsoft",
+                "average_package": 14.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 35.0,
+                "company": "Intel",
+                "average_package": 10.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 18.0,
+                "company": "Vedanta",
+                "average_package": 7.2
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 13.0,
+                "company": "TCS",
+                "average_package": 6.8
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 15.0,
+                "company": "Panacea Biotec",
+                "average_package": 6.5
+            }
+        }
+    },
+    "NIT Jalandhar": {
+        "CSE": {
+            "2025": {
+                "highest_package": 64.0,
+                "company": "Amazon",
+                "average_package": 14.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 40.0,
+                "company": "Qualcomm",
+                "average_package": 11.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 20.0,
+                "company": "Maruti Suzuki",
+                "average_package": 7.5
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 14.0,
+                "company": "Infosys",
+                "average_package": 7.0
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 16.0,
+                "company": "Sun Pharma",
+                "average_package": 6.8
+            }
+        }
+    },
+    "NIT Agartala": {
+        "CSE": {
+            "2025": {
+                "highest_package": 50.0,
+                "company": "Dell",
+                "average_package": 12.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 32.0,
+                "company": "Cisco",
+                "average_package": 9.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 16.0,
+                "company": "L&T",
+                "average_package": 6.5
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 12.0,
+                "company": "Wipro",
+                "average_package": 6.0
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 14.0,
+                "company": "Dr. Reddy's",
+                "average_package": 5.8
+            }
+        }
+    },
+    "NIT Silchar": {
+        "CSE": {
+            "2025": {
+                "highest_package": 52.0,
+                "company": "Amazon",
+                "average_package": 13.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 34.0,
+                "company": "Intel",
+                "average_package": 9.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 17.0,
+                "company": "Tata Steel",
+                "average_package": 6.8
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 13.0,
+                "company": "Accenture",
+                "average_package": 6.2
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 15.0,
+                "company": "Biocon",
+                "average_package": 6.0
+            }
+        }
+    },
+    "NIT Meghalaya": {
+        "CSE": {
+            "2025": {
+                "highest_package": 45.0,
+                "company": "Adobe",
+                "average_package": 11.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 30.0,
+                "company": "Qualcomm",
+                "average_package": 8.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 15.0,
+                "company": "BHEL",
+                "average_package": 6.2
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 11.0,
+                "company": "TCS",
+                "average_package": 5.8
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 13.0,
+                "company": "Syngene",
+                "average_package": 5.5
+            }
+        }
+    },
+    "NIT Goa": {
+        "CSE": {
+            "2025": {
+                "highest_package": 55.0,
+                "company": "Microsoft",
+                "average_package": 14.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 36.0,
+                "company": "Analog Devices",
+                "average_package": 10.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 17.5,
+                "company": "Bosch",
+                "average_package": 7.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 13.5,
+                "company": "Infosys",
+                "average_package": 6.5
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 15.5,
+                "company": "Cipla",
+                "average_package": 6.2
+            }
+        }
+    },
+    "NIT Manipur": {
+        "CSE": {
+            "2025": {
+                "highest_package": 42.0,
+                "company": "Amazon",
+                "average_package": 10.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 28.0,
+                "company": "Cisco",
+                "average_package": 8.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 14.0,
+                "company": "L&T",
+                "average_package": 5.8
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 10.5,
+                "company": "Wipro",
+                "average_package": 5.5
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 12.0,
+                "company": "Lupin",
+                "average_package": 5.2
+            }
+        }
+    },
+    "NIT Mizoram": {
+        "CSE": {
+            "2025": {
+                "highest_package": 40.0,
+                "company": "Dell",
+                "average_package": 10.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 27.0,
+                "company": "Intel",
+                "average_package": 7.8
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 13.5,
+                "company": "Tata Steel",
+                "average_package": 5.5
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 10.0,
+                "company": "Cognizant",
+                "average_package": 5.2
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 11.5,
+                "company": "Dr. Reddy's",
+                "average_package": 5.0
+            }
+        }
+    },
+    "NIT Nagaland": {
+        "CSE": {
+            "2025": {
+                "highest_package": 41.0,
+                "company": "Adobe",
+                "average_package": 10.2
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 27.5,
+                "company": "Qualcomm",
+                "average_package": 8.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 13.8,
+                "company": "BHEL",
+                "average_package": 5.6
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 10.2,
+                "company": "TCS",
+                "average_package": 5.3
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 11.8,
+                "company": "Sun Pharma",
+                "average_package": 5.1
+            }
+        }
+    },
+    "NIT Sikkim": {
+        "CSE": {
+            "2025": {
+                "highest_package": 44.0,
+                "company": "Microsoft",
+                "average_package": 11.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 29.0,
+                "company": "Analog Devices",
+                "average_package": 8.2
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 14.5,
+                "company": "Maruti Suzuki",
+                "average_package": 5.9
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 10.8,
+                "company": "Infosys",
+                "average_package": 5.6
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 12.5,
+                "company": "Panacea Biotec",
+                "average_package": 5.4
+            }
+        }
+    },
+    "NIT Arunachal Pradesh": {
+        "CSE": {
+            "2025": {
+                "highest_package": 43.0,
+                "company": "Amazon",
+                "average_package": 10.8
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 28.5,
+                "company": "Cisco",
+                "average_package": 8.1
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 14.2,
+                "company": "Ashok Leyland",
+                "average_package": 5.7
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 10.5,
+                "company": "Wipro",
+                "average_package": 5.4
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 12.2,
+                "company": "Syngene",
+                "average_package": 5.2
+            }
+        }
+    },
+    "NIT Uttarakhand": {
+        "CSE": {
+            "2025": {
+                "highest_package": 49.0,
+                "company": "Dell",
+                "average_package": 11.8
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 31.0,
+                "company": "Intel",
+                "average_package": 8.8
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 15.5,
+                "company": "L&T",
+                "average_package": 6.4
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 11.8,
+                "company": "Accenture",
+                "average_package": 5.9
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 13.8,
+                "company": "Biocon",
+                "average_package": 5.7
+            }
+        }
+    },
+    "NIT Delhi": {
+        "CSE": {
+            "2025": {
+                "highest_package": 82.0,
+                "company": "Amazon",
+                "average_package": 20.0
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 48.0,
+                "company": "Qualcomm",
+                "average_package": 14.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 22.0,
+                "company": "Hero MotoCorp",
+                "average_package": 8.2
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 16.0,
+                "company": "Adobe",
+                "average_package": 7.8
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 18.0,
+                "company": "Dr. Reddy's",
+                "average_package": 7.2
+            }
+        }
+    },
+    "NIT Puducherry": {
+        "CSE": {
+            "2025": {
+                "highest_package": 48.0,
+                "company": "Microsoft",
+                "average_package": 11.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 31.0,
+                "company": "Analog Devices",
+                "average_package": 8.6
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 15.2,
+                "company": "Bosch",
+                "average_package": 6.3
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 11.5,
+                "company": "Infosys",
+                "average_package": 5.8
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 13.5,
+                "company": "Cipla",
+                "average_package": 5.6
+            }
+        }
+    },
+    "IIIT Sonepat": {
+        "CSE": {
+            "2025": {
+                "highest_package": 55.0,
+                "company": "Amazon",
+                "average_package": 14.5
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 35.0,
+                "company": "Qualcomm",
+                "average_package": 10.5
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 16.0,
+                "company": "Tata Motors",
+                "average_package": 7.0
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 12.5,
+                "company": "Wipro",
+                "average_package": 6.5
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 14.5,
+                "company": "Lupin",
+                "average_package": 6.2
+            }
+        }
+    },
+    "IIIT Una": {
+        "CSE": {
+            "2025": {
+                "highest_package": 52.0,
+                "company": "Microsoft",
+                "average_package": 13.8
+            }
+        },
+        "ECE": {
+            "2025": {
+                "highest_package": 33.0,
+                "company": "Intel",
+                "average_package": 10.0
+            }
+        },
+        "Mechanical": {
+            "2025": {
+                "highest_package": 15.0,
+                "company": "L&T",
+                "average_package": 6.8
+            }
+        },
+        "Designing": {
+            "2025": {
+                "highest_package": 12.0,
+                "company": "TCS",
+                "average_package": 6.2
+            }
+        },
+        "Biotech": {
+            "2025": {
+                "highest_package": 14.0,
+                "company": "Sun Pharma",
+                "average_package": 6.0
+            }
+        }
     }
 }
