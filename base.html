@@ -834,8 +834,7 @@ class="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-xs text-w
 <option value="text">Paste Offer Text</option>
 <option value="txt">Upload TXT</option>
 <option value="pdf">Upload PDF</option>
-<option value="url">Job Offer URL</option>
-<option value="email">Email Offer</option>
+
 
 </select>
 
@@ -886,54 +885,7 @@ class="w-full text-xs text-gray-400 bg-gray-950 border border-gray-800 rounded-x
 
 </div>
 
-<div id="urlInput" class="hidden">
 
-<label class="text-xs text-gray-400 block mb-2">
-Job Offer URL
-</label>
-
-<input
-id="offerUrl"
-type="url"
-placeholder="https://example.com/job-offer"
-class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-/>
-
-</div>
-
-<div id="emailInput" class="hidden space-y-3">
-
-<div>
-
-<label class="text-xs text-gray-400 block mb-1">
-Email Address
-</label>
-
-<input
-id="emailAddress"
-type="email"
-placeholder="your@email.com"
-class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-/>
-
-</div>
-
-<div>
-
-<label class="text-xs text-gray-400 block mb-1">
-App Password
-</label>
-
-<input
-id="appPassword"
-type="password"
-placeholder="Email app password"
-class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white"
-/>
-
-</div>
-
-</div>
 
 <div class="flex gap-2 mt-4">
 
@@ -2260,9 +2212,6 @@ function clearOffer() {
 
     document.getElementById("rawText").value = "";
     document.getElementById("offerFile").value = "";
-    document.getElementById("offerUrl").value = "";
-    document.getElementById("emailAddress").value = "";
-    document.getElementById("appPassword").value = "";
     document.getElementById("inputStatus").innerText = "";
 
     document.getElementById("verifierPlaceholder")
@@ -3578,6 +3527,34 @@ function closeModal() {
     document.getElementById("modalOverlay")
         .classList.add("hidden");
 
+}
+function changeInputMethod() {
+
+    const method = document.getElementById("inputMethod").value;
+
+    const textInput = document.getElementById("textInput");
+    const fileInput = document.getElementById("fileInput");
+    const offerFile = document.getElementById("offerFile");
+
+    // Hide both first
+    textInput.classList.add("hidden");
+    fileInput.classList.add("hidden");
+
+    // Text input
+    if (method === "text") {
+        textInput.classList.remove("hidden");
+    }
+
+    // TXT or PDF upload
+    if (method === "txt" || method === "pdf") {
+        fileInput.classList.remove("hidden");
+
+        if (method === "txt") {
+            offerFile.accept = ".txt";
+        } else if (method === "pdf") {
+            offerFile.accept = ".pdf";
+        }
+    }
 }
 
 </script>

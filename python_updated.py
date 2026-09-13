@@ -55,36 +55,147 @@ def read_frmurl(url):
     try:
         req = Request(
             url,
-            headers={"User-Agent": "Mozilla/5.0"}
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/153.0.0.0 Safari/537.36"
+                ),
+                "Accept-Language": "en-US,en;q=0.9",
+            }
         )
 
         with urlopen(req, timeout=15) as response:
             content = response.read()
 
-        text = content.decode("utf-8", errors="ignore")
+        html = content.decode("utf-8", errors="ignore")
 
-        text = re.sub(
-            r"<script.*?</script>",
+        # --------------------------------------------------
+        # Remove content that should never become offer text
+        # --------------------------------------------------
+
+        html = re.sub(
+            r"<script\b[^>]*>.*?</script>",
             " ",
-            text,
+            html,
             flags=re.DOTALL | re.IGNORECASE
         )
 
-        text = re.sub(
-            r"<style.*?</style>",
+        html = re.sub(
+            r"<style\b[^>]*>.*?</style>",
             " ",
-            text,
+            html,
             flags=re.DOTALL | re.IGNORECASE
         )
 
-        text = re.sub(r"<[^>]+>", " ", text)
-        text = re.sub(r"\s+", " ", text)
+        html = re.sub(
+            r"<noscript\b[^>]*>.*?</noscript>",
+            " ",
+            html,
+            flags=re.DOTALL | re.IGNORECASE
+        )
 
-        return text.strip()
+        # --------------------------------------------------
+        # Extract useful LinkedIn metadata BEFORE stripping HTML
+        # --------------------------------------------------
+
+        extracted_parts = []
+
+        # OpenGraph title
+        og_title = re.search(
+            r'<meta[^>]+property=["\']og:title["\'][^>]+content=["\']([^"\']+)',
+            html,
+            flags=re.IGNORECASE
+        )
+
+        if og_title:
+            extracted_parts.append(og_title.group(1))
+
+        # Page title
+        page_title = re.search(
+            r"<title[^>]*>(.*?)</title>",
+            html,
+            flags=re.DOTALL | re.IGNORECASE
+        )
+
+        if page_title:
+            title = re.sub(r"\s+", " ", page_title.group(1)).strip()
+
+            if title and title not in extracted_parts:
+                extracted_parts.append(title)
+
+        # --------------------------------------------------
+        # Strip HTML tags
+        # --------------------------------------------------
+
+        text = re.sub(
+            r"<[^>]+>",
+            " ",
+            html
+        )
+
+        # Decode common HTML entities
+        text = text.replace("&amp;", "&")
+        text = text.replace("&quot;", '"')
+        text = text.replace("&#39;", "'")
+        text = text.replace("&nbsp;", " ")
+
+        # Normalize whitespace
+        text = re.sub(
+            r"\s+",
+            " ",
+            text
+        ).strip()
+
+        # --------------------------------------------------
+        # Remove common LinkedIn navigation noise
+        # --------------------------------------------------
+
+        noise_patterns = [
+            r"\bJoin now\b",
+            r"\bSign in\b",
+            r"\bSign up\b",
+            r"\bLog in\b",
+            r"\bSkip to main content\b",
+            r"\bHelp Center\b",
+            r"\bPrivacy Policy\b",
+            r"\bUser Agreement\b",
+            r"\bCookie Policy\b",
+        ]
+
+        for pattern in noise_patterns:
+            text = re.sub(
+                pattern,
+                " ",
+                text,
+                flags=re.IGNORECASE
+            )
+
+        text = re.sub(
+            r"\s+",
+            " ",
+            text
+        ).strip()
+
+        # --------------------------------------------------
+        # Prefer meaningful metadata + page content
+        # --------------------------------------------------
+
+        if extracted_parts:
+            metadata_text = " ".join(extracted_parts)
+
+            if text:
+                return f"{metadata_text}\n{text}"
+
+            return metadata_text
+
+        if not text:
+            return "ERROR: No readable text found at URL."
+
+        return text
 
     except Exception as exc:
         return f"ERROR: Could not read URL: {exc}"
-
 
 def fetch_offer_from_email(email_address, app_password):
     if not email_address or not app_password:

@@ -359,7 +359,7 @@ if __name__ == "__main__":
     print("======================================")
     print("Backend:      http://127.0.0.1:8000")
     print("Health:       http://127.0.0.1:8000/health")
-    print("Categories:   http://127.0.0.1:8000/job-categories")
+    print("Categories    :http://127.0.0.1:8000/job-categories")
     print("Universities: http://127.0.0.1:8000/universities")
     print("Placement:    http://127.0.0.1:8000/placement")
     print("======================================")
