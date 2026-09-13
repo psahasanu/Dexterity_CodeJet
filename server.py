@@ -236,23 +236,26 @@ def analyze_resume():
     file = request.files.get("resume")
 
     if not category:
-        return error_response(
-            "No category selected."
-        )
+        return error_response("No category selected.")
 
     if not job_title:
-        return error_response(
-            "No job selected."
-        )
+        return error_response("No job selected.")
 
     if not file:
+        return error_response("No resume uploaded.")
+
+    # Keep the actual uploaded file extension
+    original_name = file.filename or ""
+    extension = os.path.splitext(original_name)[1].lower()
+
+    if extension not in [".pdf", ".docx"]:
         return error_response(
-            "No resume uploaded."
+            "Only PDF and DOCX resumes are supported."
         )
 
     with tempfile.NamedTemporaryFile(
         delete=False,
-        suffix=".docx"
+        suffix=extension
     ) as tmp:
         file.save(tmp.name)
         resume_path = tmp.name
